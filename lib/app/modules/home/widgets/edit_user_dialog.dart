@@ -4,7 +4,12 @@ import 'package:get/get.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 
 class EditUserDialog extends StatelessWidget {
-  EditUserDialog({super.key, this.user, required this.email});
+  EditUserDialog({
+    super.key,
+    this.user,
+    required this.email,
+    this.allowDateChange = true,
+  });
   final WeightTrackUserModel? user;
   late final TextEditingController nameController = TextEditingController(
     text: user?.name,
@@ -13,6 +18,7 @@ class EditUserDialog extends StatelessWidget {
     text: user?.height.toString(),
   );
   final String email;
+  final bool allowDateChange;
 
   @override
   Widget build(BuildContext context) {
@@ -54,50 +60,53 @@ class EditUserDialog extends StatelessWidget {
                 height: 56,
                 width: Get.width / 3,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (nameController.text.trim().isEmpty) {
-                      Get.snackbar(
-                        'Error',
-                        'Name cannot be empty',
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                      );
-                      return;
-                    }
-                    if (heightController.text.trim().isEmpty) {
-                      Get.snackbar(
-                        'Error',
-                        'Height cannot be empty',
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                      );
-                      return;
-                    }
-                    final double height =
-                        double.tryParse(heightController.text) ?? 0.0;
-                    if (height <= 0) {
-                      Get.snackbar(
-                        'Error',
-                        'Height Should be greater than 0',
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                      );
-                      return;
-                    }
-                    Get.back(
-                      result:
-                          user == null
-                              ? WeightTrackUserModel(
-                                email: email,
-                                name: nameController.text,
-                                height: height,
-                              )
-                              : user?.copyWith(
-                                name: nameController.text,
-                                height: height,
-                              ),
-                    );
-                  },
+                  onPressed:
+                      allowDateChange
+                          ? () {
+                            if (nameController.text.trim().isEmpty) {
+                              Get.snackbar(
+                                'Error',
+                                'Name cannot be empty',
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                              return;
+                            }
+                            if (heightController.text.trim().isEmpty) {
+                              Get.snackbar(
+                                'Error',
+                                'Height cannot be empty',
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                              return;
+                            }
+                            final double height =
+                                double.tryParse(heightController.text) ?? 0.0;
+                            if (height <= 0) {
+                              Get.snackbar(
+                                'Error',
+                                'Height Should be greater than 0',
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                              return;
+                            }
+                            Get.back(
+                              result:
+                                  user == null
+                                      ? WeightTrackUserModel(
+                                        email: email,
+                                        name: nameController.text,
+                                        height: height,
+                                      )
+                                      : user?.copyWith(
+                                        name: nameController.text,
+                                        height: height,
+                                      ),
+                            );
+                          }
+                          : null,
                   child: Text('Save'),
                 ),
               ),
