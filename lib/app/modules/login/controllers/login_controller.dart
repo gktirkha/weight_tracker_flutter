@@ -7,8 +7,11 @@ class LoginController extends GetxController {
   final emailController = TextEditingController();
 
   final isObscure = true.obs;
+  final FocusNode emailNode = FocusNode();
+  final FocusNode passwordNode = FocusNode();
 
   Future<void> login() async {
+    isLoginProgress.value = true;
     final auth = FirebaseAuth.instance;
     try {
       await auth.signInWithEmailAndPassword(
@@ -20,10 +23,13 @@ class LoginController extends GetxController {
       Get.snackbar(e.code, e.message ?? '');
     } catch (e) {
       Get.snackbar('Error', 'An unknown error occurred\n${e.toString()}');
+    } finally {
+      isLoginProgress.value = false;
     }
   }
 
   Future<void> sendResetPasswordEmail() async {
+    isSendEmailProgress.value = true;
     final auth = FirebaseAuth.instance;
     try {
       await auth.sendPasswordResetEmail(email: emailController.text.trim());
@@ -32,6 +38,11 @@ class LoginController extends GetxController {
       Get.snackbar(e.code, e.message ?? '');
     } catch (e) {
       Get.snackbar('Error', 'An unknown error occurred\n${e.toString()}');
+    } finally {
+      isSendEmailProgress.value = false;
     }
   }
+
+  final isLoginProgress = false.obs;
+  final isSendEmailProgress = false.obs;
 }

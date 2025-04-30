@@ -17,6 +17,10 @@ class LoginView extends GetView<LoginController> {
               spacing: 16,
               children: [
                 TextField(
+                  onSubmitted: (value) {
+                    controller.passwordNode.requestFocus();
+                  },
+                  focusNode: controller.emailNode,
                   autofillHints: [AutofillHints.email],
                   controller: controller.emailController,
                   decoration: const InputDecoration(
@@ -26,6 +30,11 @@ class LoginView extends GetView<LoginController> {
                 ),
                 Obx(
                   () => TextField(
+                    onSubmitted: (value) {
+                      controller.login();
+                      Get.focusScope?.unfocus();
+                    },
+                    focusNode: controller.passwordNode,
                     autofillHints: [AutofillHints.password],
                     obscureText: controller.isObscure.value,
                     controller: controller.passwordController,
@@ -39,8 +48,8 @@ class LoginView extends GetView<LoginController> {
                         },
                         icon: Icon(
                           controller.isObscure.value
-                              ? Icons.remove_red_eye_outlined
-                              : Icons.remove_red_eye,
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
                         ),
                       ),
                     ),
@@ -56,8 +65,22 @@ class LoginView extends GetView<LoginController> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: controller.login,
-                    child: const Text('Login'),
+                    onPressed:
+                        controller.isLoginProgress.value
+                            ? null
+                            : controller.login,
+                    child: Obx(
+                      () =>
+                          controller.isLoginProgress.value
+                              ? const SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Text('Login'),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -69,8 +92,22 @@ class LoginView extends GetView<LoginController> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: controller.sendResetPasswordEmail,
-                    child: const Text('Send Password Reset Email'),
+                    onPressed:
+                        controller.isSendEmailProgress.value
+                            ? null
+                            : controller.sendResetPasswordEmail,
+                    child: Obx(
+                      () =>
+                          controller.isSendEmailProgress.value
+                              ? const SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Text('Send Password Reset Email'),
+                    ),
                   ),
                 ),
               ],
