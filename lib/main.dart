@@ -12,7 +12,10 @@ void main() async {
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
-      theme: ThemeData(colorSchemeSeed: Colors.blue),
+      theme: ThemeData(
+        colorSchemeSeed: Colors.blue,
+        brightness: Brightness.dark,
+      ),
       title: 'Weight Tracker',
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
