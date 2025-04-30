@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -12,9 +13,13 @@ class HomeView extends GetView<HomeController> {
         actions: [
           IconButton(
             onPressed: () {
-              Get.offAllNamed('/login');
+              Get.offAllNamed(Routes.LOGIN);
             },
             icon: const Icon(Icons.logout),
+          ),
+          IconButton(
+            onPressed: controller.onProfileEdit,
+            icon: const Icon(Icons.person),
           ),
         ],
       ),
