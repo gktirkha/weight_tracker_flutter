@@ -14,7 +14,7 @@ class AddWeightDialog extends StatelessWidget {
     text: weightEntry?.notes,
   );
   late final dateNotifier = ValueNotifier(
-    weightEntry?.date.parseDate("'dd-MMM-yyyy'") ?? DateTime.now(),
+    weightEntry?.date.parseDate(appDateFormat) ?? DateTime.now(),
   );
   final double height;
   final WeightEntry? weightEntry;
@@ -59,7 +59,7 @@ class AddWeightDialog extends StatelessWidget {
                     valueListenable: dateNotifier,
                     builder:
                         (context, value, child) => Text(
-                          value.format(format: 'dd-MMM-yyyy'),
+                          value.format(format: appDateFormat),
                           style: TextStyle(fontSize: 24),
                         ),
                   ),
@@ -118,7 +118,7 @@ class AddWeightDialog extends StatelessWidget {
                         weight: double.parse(weightController.text),
                         bmi: bmi,
                         bmiCategory: getBmiCategory(bmi),
-                        date: dateNotifier.value.format(format: 'dd-MMM-yyyy'),
+                        date: dateNotifier.value.format(format: appDateFormat),
                       ),
                     );
                   },

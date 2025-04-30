@@ -72,3 +72,5 @@ Color getBmiCategoryColor(BmiCategory category) {
       return Colors.brown.shade800;
   }
 }
+
+String get appDateFormat => 'dd-MMM-yyyy';

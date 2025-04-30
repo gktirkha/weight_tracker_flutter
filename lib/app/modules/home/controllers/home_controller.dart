@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 
 import '../../../routes/app_pages.dart';
+import '../constants/bmi_constants.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 import '../widgets/add_weight_dialog.dart';
 import '../widgets/edit_user_dialog.dart';
 
 class HomeController extends GetxController {
   final db = FirebaseFirestore.instance;
+  String get userDbLabel => 'users';
+  String get weightTrackLabel => 'weightTrack';
 
   @override
   void onInit() {
@@ -36,12 +39,12 @@ class HomeController extends GetxController {
     }
     final now = DateTime.now();
     final userDoc = FirebaseFirestore.instance
-        .collection('Users')
+        .collection(userDbLabel)
         .doc(email)
-        .collection('weightTrack');
+        .collection(weightTrackLabel);
 
     final todaysLog =
-        await userDoc.doc(now.format(format: 'dd-MMM-yyyy')).get();
+        await userDoc.doc(now.format(format: appDateFormat)).get();
 
     Get.dialog<WeightEntry>(
       AddWeightDialog(
@@ -64,7 +67,9 @@ class HomeController extends GetxController {
       logout();
       return;
     }
-    final userData = FirebaseFirestore.instance.collection('Users').doc(email);
+    final userData = FirebaseFirestore.instance
+        .collection(userDbLabel)
+        .doc(email);
     final userDoc = await userData.get();
     if (userDoc.exists) {
       user.value = WeightTrackUserModel.fromJson(userDoc.data()!);
@@ -85,7 +90,7 @@ class HomeController extends GetxController {
     ).then((value) {
       if (value == null) return;
       FirebaseFirestore.instance
-          .collection('Users')
+          .collection(userDbLabel)
           .doc(email)
           .set(value.toJson());
       user.value = value;
