@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../constants/bmi_constants.dart';
+
 part 'weight_track_model.freezed.dart';
 part 'weight_track_model.g.dart';
 
@@ -22,6 +24,8 @@ sealed class WeightEntry with _$WeightEntry {
     @JsonKey(name: 'weight') required double? weight,
     @JsonKey(name: 'notes') required String? notes,
     @JsonKey(name: 'bmi') required double? bmi,
+    @JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,
+    @JsonKey(name: 'date') required String? date,
   }) = _WeightEntry;
 
   factory WeightEntry.fromJson(Map<String, dynamic> json) =>

@@ -155,7 +155,7 @@ as String?,
 /// @nodoc
 mixin _$WeightEntry {
 
-@JsonKey(name: 'timestamp') String get timestamp;@JsonKey(name: 'weight') double? get weight;@JsonKey(name: 'notes') String? get notes;@JsonKey(name: 'bmi') double? get bmi;
+@JsonKey(name: 'timestamp') String get timestamp;@JsonKey(name: 'weight') double? get weight;@JsonKey(name: 'notes') String? get notes;@JsonKey(name: 'bmi') double? get bmi;@JsonKey(name: 'bmiCategory') BmiCategory? get bmiCategory;@JsonKey(name: 'date') String? get date;
 /// Create a copy of WeightEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -168,16 +168,16 @@ $WeightEntryCopyWith<WeightEntry> get copyWith => _$WeightEntryCopyWithImpl<Weig
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeightEntry&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.bmi, bmi) || other.bmi == bmi));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeightEntry&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.bmi, bmi) || other.bmi == bmi)&&(identical(other.bmiCategory, bmiCategory) || other.bmiCategory == bmiCategory)&&(identical(other.date, date) || other.date == date));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,timestamp,weight,notes,bmi);
+int get hashCode => Object.hash(runtimeType,timestamp,weight,notes,bmi,bmiCategory,date);
 
 @override
 String toString() {
-  return 'WeightEntry(timestamp: $timestamp, weight: $weight, notes: $notes, bmi: $bmi)';
+  return 'WeightEntry(timestamp: $timestamp, weight: $weight, notes: $notes, bmi: $bmi, bmiCategory: $bmiCategory, date: $date)';
 }
 
 
@@ -188,7 +188,7 @@ abstract mixin class $WeightEntryCopyWith<$Res>  {
   factory $WeightEntryCopyWith(WeightEntry value, $Res Function(WeightEntry) _then) = _$WeightEntryCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'timestamp') String timestamp,@JsonKey(name: 'weight') double? weight,@JsonKey(name: 'notes') String? notes,@JsonKey(name: 'bmi') double? bmi
+@JsonKey(name: 'timestamp') String timestamp,@JsonKey(name: 'weight') double? weight,@JsonKey(name: 'notes') String? notes,@JsonKey(name: 'bmi') double? bmi,@JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,@JsonKey(name: 'date') String? date
 });
 
 
@@ -205,13 +205,15 @@ class _$WeightEntryCopyWithImpl<$Res>
 
 /// Create a copy of WeightEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? timestamp = null,Object? weight = freezed,Object? notes = freezed,Object? bmi = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? timestamp = null,Object? weight = freezed,Object? notes = freezed,Object? bmi = freezed,Object? bmiCategory = freezed,Object? date = freezed,}) {
   return _then(_self.copyWith(
 timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,weight: freezed == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as double?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,bmi: freezed == bmi ? _self.bmi : bmi // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,bmiCategory: freezed == bmiCategory ? _self.bmiCategory : bmiCategory // ignore: cast_nullable_to_non_nullable
+as BmiCategory?,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -222,13 +224,15 @@ as double?,
 @JsonSerializable()
 
 class _WeightEntry implements WeightEntry {
-   _WeightEntry({@JsonKey(name: 'timestamp') required this.timestamp, @JsonKey(name: 'weight') required this.weight, @JsonKey(name: 'notes') required this.notes, @JsonKey(name: 'bmi') required this.bmi});
+   _WeightEntry({@JsonKey(name: 'timestamp') required this.timestamp, @JsonKey(name: 'weight') required this.weight, @JsonKey(name: 'notes') required this.notes, @JsonKey(name: 'bmi') required this.bmi, @JsonKey(name: 'bmiCategory') this.bmiCategory, @JsonKey(name: 'date') required this.date});
   factory _WeightEntry.fromJson(Map<String, dynamic> json) => _$WeightEntryFromJson(json);
 
 @override@JsonKey(name: 'timestamp') final  String timestamp;
 @override@JsonKey(name: 'weight') final  double? weight;
 @override@JsonKey(name: 'notes') final  String? notes;
 @override@JsonKey(name: 'bmi') final  double? bmi;
+@override@JsonKey(name: 'bmiCategory') final  BmiCategory? bmiCategory;
+@override@JsonKey(name: 'date') final  String? date;
 
 /// Create a copy of WeightEntry
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeightEntry&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.bmi, bmi) || other.bmi == bmi));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeightEntry&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.weight, weight) || other.weight == weight)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.bmi, bmi) || other.bmi == bmi)&&(identical(other.bmiCategory, bmiCategory) || other.bmiCategory == bmiCategory)&&(identical(other.date, date) || other.date == date));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,timestamp,weight,notes,bmi);
+int get hashCode => Object.hash(runtimeType,timestamp,weight,notes,bmi,bmiCategory,date);
 
 @override
 String toString() {
-  return 'WeightEntry(timestamp: $timestamp, weight: $weight, notes: $notes, bmi: $bmi)';
+  return 'WeightEntry(timestamp: $timestamp, weight: $weight, notes: $notes, bmi: $bmi, bmiCategory: $bmiCategory, date: $date)';
 }
 
 
@@ -263,7 +267,7 @@ abstract mixin class _$WeightEntryCopyWith<$Res> implements $WeightEntryCopyWith
   factory _$WeightEntryCopyWith(_WeightEntry value, $Res Function(_WeightEntry) _then) = __$WeightEntryCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'timestamp') String timestamp,@JsonKey(name: 'weight') double? weight,@JsonKey(name: 'notes') String? notes,@JsonKey(name: 'bmi') double? bmi
+@JsonKey(name: 'timestamp') String timestamp,@JsonKey(name: 'weight') double? weight,@JsonKey(name: 'notes') String? notes,@JsonKey(name: 'bmi') double? bmi,@JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,@JsonKey(name: 'date') String? date
 });
 
 
@@ -280,13 +284,15 @@ class __$WeightEntryCopyWithImpl<$Res>
 
 /// Create a copy of WeightEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? timestamp = null,Object? weight = freezed,Object? notes = freezed,Object? bmi = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? timestamp = null,Object? weight = freezed,Object? notes = freezed,Object? bmi = freezed,Object? bmiCategory = freezed,Object? date = freezed,}) {
   return _then(_WeightEntry(
 timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,weight: freezed == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as double?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,bmi: freezed == bmi ? _self.bmi : bmi // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,bmiCategory: freezed == bmiCategory ? _self.bmiCategory : bmiCategory // ignore: cast_nullable_to_non_nullable
+as BmiCategory?,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

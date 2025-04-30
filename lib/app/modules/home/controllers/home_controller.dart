@@ -5,6 +5,7 @@ import 'package:magic_extensions/magic_extensions.dart';
 
 import '../../../routes/app_pages.dart';
 import '../models/weight_track_model/weight_track_model.dart';
+import '../widgets/add_weight_dialog.dart';
 import '../widgets/edit_user_dialog.dart';
 
 class HomeController extends GetxController {
@@ -25,28 +26,44 @@ class HomeController extends GetxController {
     FirebaseAuth.instance.signOut();
   }
 
+  final isAddLoading = false.obs;
   Future<void> addData() async {
+    isAddLoading.value = true;
     final email = FirebaseAuth.instance.currentUser?.email;
-    if (email == null) return;
-    final DateTime date = DateTime.now();
-    final userData = FirebaseFirestore.instance.collection('Users').doc(email);
-    final WeightEntry weightEntry = WeightEntry(
-      timestamp: date.toIso8601String(),
-      weight: 80.0,
-      notes: 'Feeling good',
-      bmi: 22.5,
-    );
-    userData
-        .collection('weightTrack')
-        .doc(date.format(format: 'dd-MMM-yyyy'))
-        .set(weightEntry.toJson());
+    if (email == null || user.value == null) {
+      logout();
+      return;
+    }
+    final now = DateTime.now();
+    final userDoc = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(email)
+        .collection('weightTrack');
+
+    final todaysLog =
+        await userDoc.doc(now.format(format: 'dd-MMM-yyyy')).get();
+
+    Get.dialog<WeightEntry>(
+      AddWeightDialog(
+        height: user.value!.height,
+        weightEntry:
+            todaysLog.exists ? WeightEntry.fromJson(todaysLog.data()!) : null,
+      ),
+    ).then((value) {
+      if (value == null) return;
+      userDoc.doc(value.date).set(value.toJson());
+    });
+    isAddLoading.value = false;
   }
 
   final user = Rxn<WeightTrackUserModel>();
 
   Future<void> checkUser() async {
     final email = FirebaseAuth.instance.currentUser?.email;
-    if (email == null) return;
+    if (email == null) {
+      logout();
+      return;
+    }
     final userData = FirebaseFirestore.instance.collection('Users').doc(email);
     final userDoc = await userData.get();
     if (userDoc.exists) {
@@ -58,7 +75,10 @@ class HomeController extends GetxController {
 
   void onProfileEdit() {
     final email = FirebaseAuth.instance.currentUser?.email;
-    if (email == null) return;
+    if (email == null) {
+      logout();
+      return;
+    }
     Get.dialog(
       EditUserDialog(user: user.value, email: email),
       barrierDismissible: user.value != null,

@@ -28,7 +28,12 @@ class HomeView extends GetView<HomeController> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: controller.addData,
-        child: Icon(Icons.add),
+        child: Obx(
+          () =>
+              controller.isAddLoading.value
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Icon(Icons.add),
+        ),
       ),
     );
   }

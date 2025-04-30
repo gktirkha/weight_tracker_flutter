@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../models/weight_track_model/weight_track_model.dart';
@@ -49,7 +48,6 @@ class EditUserDialog extends StatelessWidget {
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
 
               SizedBox(
@@ -57,21 +55,46 @@ class EditUserDialog extends StatelessWidget {
                 width: Get.width / 3,
                 child: ElevatedButton(
                   onPressed: () {
+                    if (nameController.text.trim().isEmpty) {
+                      Get.snackbar(
+                        'Error',
+                        'Name cannot be empty',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
+                    if (heightController.text.trim().isEmpty) {
+                      Get.snackbar(
+                        'Error',
+                        'Height cannot be empty',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
+                    final double height =
+                        double.tryParse(heightController.text) ?? 0.0;
+                    if (height <= 0) {
+                      Get.snackbar(
+                        'Error',
+                        'Height Should be greater than 0',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
                     Get.back(
                       result:
                           user == null
                               ? WeightTrackUserModel(
                                 email: email,
                                 name: nameController.text,
-                                height:
-                                    double.tryParse(heightController.text) ??
-                                    0.0,
+                                height: height,
                               )
                               : user?.copyWith(
                                 name: nameController.text,
-                                height:
-                                    double.tryParse(heightController.text) ??
-                                    0.0,
+                                height: height,
                               ),
                     );
                   },
