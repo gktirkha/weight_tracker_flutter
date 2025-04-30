@@ -10,6 +10,9 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.dark,
+      theme: ThemeData(colorSchemeSeed: Colors.blue),
       title: 'Weight Tracker',
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
