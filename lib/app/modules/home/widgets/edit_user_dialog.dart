@@ -17,6 +17,9 @@ class EditUserDialog extends StatelessWidget {
   late final TextEditingController heightController = TextEditingController(
     text: user?.height.toString(),
   );
+  late final TextEditingController initialWeight = TextEditingController(
+    text: user?.initialWeight.toString(),
+  );
   final String email;
   final bool allowDateChange;
 
@@ -51,6 +54,15 @@ class EditUserDialog extends StatelessWidget {
                 decoration: const InputDecoration(
                   labelText: 'Height in cm',
                   hintText: 'Enter your Height in cm',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: initialWeight,
+                decoration: const InputDecoration(
+                  labelText: 'Initial Weight in kg',
+                  hintText: 'Enter your Initial Weight in kg',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 keyboardType: TextInputType.number,
@@ -92,6 +104,26 @@ class EditUserDialog extends StatelessWidget {
                               );
                               return;
                             }
+                            if (initialWeight.text.trim().isEmpty) {
+                              Get.snackbar(
+                                'Error',
+                                'Weight cannot be empty',
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                              return;
+                            }
+                            final double initWeight =
+                                double.tryParse(initialWeight.text) ?? 0.0;
+                            if (initWeight <= 0) {
+                              Get.snackbar(
+                                'Error',
+                                'Weight Should be greater than 0',
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                              return;
+                            }
                             Get.back(
                               result:
                                   user == null
@@ -99,10 +131,12 @@ class EditUserDialog extends StatelessWidget {
                                         email: email,
                                         name: nameController.text,
                                         height: height,
+                                        initialWeight: initWeight,
                                       )
                                       : user?.copyWith(
                                         name: nameController.text,
                                         height: height,
+                                        initialWeight: initWeight,
                                       ),
                             );
                           }

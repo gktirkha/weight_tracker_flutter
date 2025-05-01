@@ -12,6 +12,7 @@ _WeightTrackUserModel _$WeightTrackUserModelFromJson(
   email: json['email'] as String,
   height: (json['height'] as num).toDouble(),
   name: json['name'] as String?,
+  initialWeight: (json['initialWeight'] as num?)?.toDouble(),
 );
 
 Map<String, dynamic> _$WeightTrackUserModelToJson(
@@ -20,6 +21,7 @@ Map<String, dynamic> _$WeightTrackUserModelToJson(
   'email': instance.email,
   'height': instance.height,
   'name': instance.name,
+  'initialWeight': instance.initialWeight,
 };
 
 _WeightEntry _$WeightEntryFromJson(Map<String, dynamic> json) => _WeightEntry(
