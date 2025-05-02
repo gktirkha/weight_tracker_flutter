@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 
-import '../constants/bmi_constants.dart';
+import '../constants/bmi_helpers.dart';
+import '../constants/constants.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 
 class AddWeightDialog extends StatelessWidget {

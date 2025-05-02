@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../constants/bmi_constants.dart';
+import '../../constants/bmi_helpers.dart';
 
 part 'weight_track_model.freezed.dart';
 part 'weight_track_model.g.dart';

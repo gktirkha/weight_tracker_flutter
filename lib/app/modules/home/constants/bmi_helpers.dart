@@ -57,7 +57,7 @@ Color getBmiCategoryColor(BmiCategory category) {
     case BmiCategory.severelyUnderweight:
       return Colors.red.shade900;
     case BmiCategory.moderatelyUnderweight:
-      return Colors.red.shade700;
+      return Colors.red;
     case BmiCategory.mildlyUnderweight:
       return Colors.orange.shade600;
     case BmiCategory.normal:
@@ -73,4 +73,30 @@ Color getBmiCategoryColor(BmiCategory category) {
   }
 }
 
-String get appDateFormat => 'dd-MMM-yyyy';
+class WeightBmiRange {
+  WeightBmiRange(this.min, this.max, this.category);
+
+  final double min;
+  final double max;
+  final BmiCategory category;
+
+  @override
+  String toString() =>
+      '${category.name}: ${min.toStringAsFixed(1)} - ${max.isInfinite ? "∞" : max.toStringAsFixed(1)} kg';
+}
+
+List<WeightBmiRange> getWeightWeightBmiRanges(double heightCm) {
+  final heightMeters = heightCm / 100;
+  final h2 = heightMeters * heightMeters;
+
+  return [
+    WeightBmiRange(0, 16 * h2, BmiCategory.severelyUnderweight),
+    WeightBmiRange(16 * h2, 17 * h2, BmiCategory.moderatelyUnderweight),
+    WeightBmiRange(17 * h2, 18.5 * h2, BmiCategory.mildlyUnderweight),
+    WeightBmiRange(18.5 * h2, 25 * h2, BmiCategory.normal),
+    WeightBmiRange(25 * h2, 30 * h2, BmiCategory.overweight),
+    WeightBmiRange(30 * h2, 35 * h2, BmiCategory.obeseClass1),
+    WeightBmiRange(35 * h2, 40 * h2, BmiCategory.obeseClass2),
+    WeightBmiRange(40 * h2, (40 * h2) + 30, BmiCategory.obeseClass3),
+  ];
+}

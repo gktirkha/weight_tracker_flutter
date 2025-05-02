@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
+import '../widgets/graphs/week_weight_graph.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -23,9 +24,7 @@ class HomeView extends GetView<HomeController> {
           ),
         ],
       ),
-      body: const Center(
-        child: Text('HomeView is working', style: TextStyle(fontSize: 20)),
-      ),
+      body: Center(child: WeekWeightGraph()),
       floatingActionButton: FloatingActionButton(
         onPressed: controller.addData,
         child: Obx(
