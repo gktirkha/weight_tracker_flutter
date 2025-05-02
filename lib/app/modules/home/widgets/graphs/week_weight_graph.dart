@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
@@ -48,20 +50,39 @@ class WeekWeightGraph extends GetView<HomeController> {
         primaryXAxis: CategoryAxis(title: AxisTitle(text: 'Date')),
         primaryYAxis: NumericAxis(
           minimum:
-              ((controller.user.value?.initialWeight ?? 20) - 20) ~/ 10 * 10,
+              controller.user.value == null
+                  ? 0
+                  : ((controller.user.value?.initialWeight ?? 20) - 20) ~/
+                      10 *
+                      10,
+
+          maximum:
+              controller.user.value == null
+                  ? null
+                  : max(
+                        getWeightWeightBmiRanges(
+                              controller.user.value!.height,
+                            ).last.min +
+                            10,
+                        (controller.user.value!.maxWeight ?? 0),
+                      ) ~/
+                      10 *
+                      10,
           title: AxisTitle(text: 'Weight (kg)'),
           plotBands:
-              getWeightWeightBmiRanges(170)
-                  .map(
-                    (e) => PlotBand(
-                      start: e.min,
-                      end: e.max,
-                      color: getBmiCategoryColor(e.category).withAlpha(30),
-                      borderColor: Colors.black.withAlpha(80),
-                      text: getBmiCategoryLabel(e.category),
-                    ),
-                  )
-                  .toList(),
+              controller.user.value?.height == null
+                  ? []
+                  : getWeightWeightBmiRanges(170)
+                      .map(
+                        (e) => PlotBand(
+                          start: e.min,
+                          end: e.max,
+                          color: getBmiCategoryColor(e.category).withAlpha(30),
+                          borderColor: Colors.black.withAlpha(80),
+                          text: getBmiCategoryLabel(e.category),
+                        ),
+                      )
+                      .toList(),
           labelFormat: '{value} kg',
         ),
         series: <CartesianSeries>[

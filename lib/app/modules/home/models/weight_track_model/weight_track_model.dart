@@ -13,6 +13,8 @@ sealed class WeightTrackUserModel with _$WeightTrackUserModel {
     @JsonKey(name: 'name') String? name,
     @JsonKey(name: 'initialWeight') double? initialWeight,
     @JsonKey(name: 'targetWeight') double? targetWeight,
+    @JsonKey(name: 'maxWeight') double? maxWeight,
+    @JsonKey(name: 'minWeight') double? minWeight,
   }) = _WeightTrackUserModel;
 
   factory WeightTrackUserModel.fromJson(Map<String, dynamic> json) =>
