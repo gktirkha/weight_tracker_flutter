@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:magic_extensions/magic_extensions.dart';
 
 import '../models/weight_track_model/weight_track_model.dart';
+import '../models/weight_track_model/weight_track_model_x.dart';
 
 class EditUserDialog extends StatelessWidget {
   EditUserDialog({
@@ -17,9 +19,10 @@ class EditUserDialog extends StatelessWidget {
   late final TextEditingController heightController = TextEditingController(
     text: user?.height.toString(),
   );
-  late final TextEditingController initialWeight = TextEditingController(
-    text: user?.initialWeight.toString(),
-  );
+  late final TextEditingController initialWeightController =
+      TextEditingController(text: user?.initialWeight.toString());
+  late final TextEditingController targetWeightController =
+      TextEditingController(text: user?.targetWeight.toString());
   final String email;
   final bool allowDateChange;
 
@@ -59,10 +62,19 @@ class EditUserDialog extends StatelessWidget {
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: initialWeight,
+                controller: initialWeightController,
                 decoration: const InputDecoration(
                   labelText: 'Initial Weight in kg',
                   hintText: 'Enter your Initial Weight in kg',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: targetWeightController,
+                decoration: const InputDecoration(
+                  labelText: 'Target Weight in kg',
+                  hintText: 'Enter your Target Weight in kg',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
                 keyboardType: TextInputType.number,
@@ -71,83 +83,26 @@ class EditUserDialog extends StatelessWidget {
               SizedBox(
                 height: 56,
                 width: Get.width / 3,
-                child: ElevatedButton(
-                  onPressed:
-                      allowDateChange
-                          ? () {
-                            if (nameController.text.trim().isEmpty) {
-                              Get.snackbar(
-                                'Error',
-                                'Name cannot be empty',
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                              );
-                              return;
-                            }
-                            if (heightController.text.trim().isEmpty) {
-                              Get.snackbar(
-                                'Error',
-                                'Height cannot be empty',
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                              );
-                              return;
-                            }
-                            final double height =
-                                double.tryParse(heightController.text) ?? 0.0;
-                            if (height <= 0) {
-                              Get.snackbar(
-                                'Error',
-                                'Height Should be greater than 0',
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                              );
-                              return;
-                            }
-                            if (initialWeight.text.trim().isEmpty) {
-                              Get.snackbar(
-                                'Error',
-                                'Weight cannot be empty',
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                              );
-                              return;
-                            }
-                            final double initWeight =
-                                double.tryParse(initialWeight.text) ?? 0.0;
-                            if (initWeight <= 0) {
-                              Get.snackbar(
-                                'Error',
-                                'Weight Should be greater than 0',
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                              );
-                              return;
-                            }
-                            Get.back(
-                              result:
-                                  user == null
-                                      ? WeightTrackUserModel(
-                                        email: email,
-                                        name: nameController.text,
-                                        height: height,
-                                        initialWeight: initWeight,
-                                      )
-                                      : user?.copyWith(
-                                        name: nameController.text,
-                                        height: height,
-                                        initialWeight: initWeight,
-                                      ),
-                            );
-                          }
-                          : null,
-                  child: Text('Save'),
-                ),
+                child: ElevatedButton(onPressed: onSave, child: Text('Save')),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void onSave() {
+    final parsedUser = WeightTrackUserModel(
+      email: email,
+      name: nameController.text,
+      height: heightController.text.magicDouble(),
+      initialWeight: initialWeightController.text.magicDouble(),
+      targetWeight: targetWeightController.text.magicDouble(),
+    );
+
+    if (parsedUser.isValid) {
+      Get.back(result: parsedUser);
+    }
   }
 }
