@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -56,6 +58,15 @@ class HomeController extends GetxController {
     ).then((value) {
       if (value == null) return;
       userDoc.doc(value.date).set(value.toJson());
+      final maxWt = max((user.value?.maxWeight ?? 0), (value.weight ?? 0));
+      final minWt = min((user.value?.minWeight ?? 500), (value.weight ?? 500));
+      user.value = user.value?.copyWith(maxWeight: minWt, minWeight: maxWt);
+      if (user.value != null) {
+        FirebaseFirestore.instance
+            .collection(userDbLabel)
+            .doc(email)
+            .set(user.value!.toJson());
+      }
     });
     isAddLoading.value = false;
   }

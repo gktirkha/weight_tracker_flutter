@@ -52,7 +52,13 @@ class WeekWeightGraph extends GetView<HomeController> {
           minimum:
               controller.user.value == null
                   ? 0
-                  : ((controller.user.value?.initialWeight ?? 20) - 20) ~/
+                  : min(
+                        getWeightWeightBmiRanges(
+                              controller.user.value!.height,
+                            ).first.max -
+                            10,
+                        (controller.user.value!.minWeight ?? 0),
+                      ) ~/
                       10 *
                       10,
 

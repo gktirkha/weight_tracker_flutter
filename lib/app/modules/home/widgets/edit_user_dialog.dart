@@ -93,13 +93,22 @@ class EditUserDialog extends StatelessWidget {
   }
 
   void onSave() {
-    final parsedUser = WeightTrackUserModel(
-      email: email,
-      name: nameController.text,
-      height: heightController.text.magicDouble(),
-      initialWeight: initialWeightController.text.magicDouble(),
-      targetWeight: targetWeightController.text.magicDouble(),
-    );
+    final parsedUser =
+        user == null
+            ? WeightTrackUserModel(
+              email: email,
+              name: nameController.text,
+              height: heightController.text.magicDouble(),
+              initialWeight: initialWeightController.text.magicDouble(),
+              targetWeight: targetWeightController.text.magicDouble(),
+            )
+            : user!.copyWith(
+              email: email,
+              name: nameController.text,
+              height: heightController.text.magicDouble(),
+              initialWeight: initialWeightController.text.magicDouble(),
+              targetWeight: targetWeightController.text.magicDouble(),
+            );
 
     if (parsedUser.isValid) {
       Get.back(result: parsedUser);
