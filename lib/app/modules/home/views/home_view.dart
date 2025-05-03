@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../constants/bmi_helpers.dart';
 import '../../../constants/selection_types.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
-import '../widgets/graphs/month_graph.dart';
+import '../widgets/graphs/all_weight_graph.dart';
+import '../widgets/graphs/monthly_average_weight_graph.dart';
+import '../widgets/graphs/monthly_weight_graph.dart';
+import '../widgets/graphs/weekly_weight_graph.dart';
+import '../widgets/graphs/yearly_average_weight_graph.dart';
+import '../widgets/graphs/yearly_weight_graph.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -62,7 +68,47 @@ class HomeView extends GetView<HomeController> {
                           }
                         },
                       ),
-                      MonthWeightGraph(),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: 450,
+                          maxHeight: 450,
+                        ),
+                        child: switch (controller.selectionType.value) {
+                          SelectionTypes.weekly => WeeklyWeightGraph(),
+
+                          SelectionTypes.monthly => MonthlyWeightGraph(),
+
+                          SelectionTypes.yearly => YearlyWeightGraph(),
+
+                          SelectionTypes.monthlyAverage =>
+                            MonthlyAverageWeightGraph(),
+
+                          SelectionTypes.yearlyAverage =>
+                            YearlyAverageWeightGraph(),
+
+                          SelectionTypes.all => AllWeightGraph(),
+                        },
+                      ),
+
+                      Wrap(
+                        runSpacing: 16,
+                        spacing: 16,
+                        children: [
+                          ...BmiCategory.values.map(
+                            (e) => Row(
+                              spacing: 8,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircleAvatar(
+                                  radius: 8,
+                                  backgroundColor: getBmiCategoryColor(e),
+                                ),
+                                Text(getBmiCategoryLabel(e)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
         ),

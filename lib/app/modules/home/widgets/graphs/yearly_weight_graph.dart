@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -9,8 +10,8 @@ import '../../../../constants/bmi_helpers.dart';
 import '../../controllers/home_controller.dart';
 import '../../models/weight_track_model/weight_track_model.dart';
 
-class MonthWeightGraph extends GetView<HomeController> {
-  const MonthWeightGraph({super.key});
+class YearlyWeightGraph extends GetView<HomeController> {
+  const YearlyWeightGraph({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +78,15 @@ class MonthWeightGraph extends GetView<HomeController> {
           plotBands:
               controller.user.value?.height == null
                   ? []
-                  : getWeightWeightBmiRanges(170)
+                  : getWeightWeightBmiRanges(controller.user.value?.height)
                       .map(
                         (e) => PlotBand(
                           start: e.min,
                           end: e.max,
-                          color: getBmiCategoryColor(e.category).withAlpha(30),
+                          color: getBmiCategoryColor(
+                            e.category,
+                          ).withAlpha(plotBandAlpha),
                           borderColor: Colors.black.withAlpha(80),
-                          text: getBmiCategoryLabel(e.category),
                         ),
                       )
                       .toList(),

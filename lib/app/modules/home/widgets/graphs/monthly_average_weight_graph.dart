@@ -2,15 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:magic_extensions/magic_extensions.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../../../constants/bmi_helpers.dart';
 import '../../controllers/home_controller.dart';
 import '../../models/weight_track_model/weight_track_model.dart';
 
-class WeekWeightGraph extends GetView<HomeController> {
-  const WeekWeightGraph({super.key});
+class MonthlyAverageWeightGraph extends GetView<HomeController> {
+  const MonthlyAverageWeightGraph({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +76,15 @@ class WeekWeightGraph extends GetView<HomeController> {
           plotBands:
               controller.user.value?.height == null
                   ? []
-                  : getWeightWeightBmiRanges(170)
+                  : getWeightWeightBmiRanges(controller.user.value?.height)
                       .map(
                         (e) => PlotBand(
                           start: e.min,
                           end: e.max,
-                          color: getBmiCategoryColor(e.category).withAlpha(30),
-                          borderColor: Colors.black.withAlpha(80),
-                          text: getBmiCategoryLabel(e.category),
+                          color: getBmiCategoryColor(
+                            e.category,
+                          ).withAlpha(plotBandAlpha),
+                          borderColor: Colors.black.withAlpha(plotBandAlpha),
                         ),
                       )
                       .toList(),
@@ -102,7 +102,7 @@ class WeekWeightGraph extends GetView<HomeController> {
             dataSource: controller.graphList,
             pointColorMapper:
                 (datum, index) => getBmiCategoryColor(datum.bmiCategory!),
-            xValueMapper: (data, _) => data.date.format(),
+            xValueMapper: (data, index) => 'Week ${index + 1}',
             yValueMapper: (data, _) => data.weight,
           ),
         ],

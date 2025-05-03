@@ -56,21 +56,21 @@ String getBmiCategoryLabel(BmiCategory category) {
 Color getBmiCategoryColor(BmiCategory category) {
   switch (category) {
     case BmiCategory.severelyUnderweight:
-      return Colors.red.shade900;
+      return Colors.purple; // clearly distinct from red/orange
     case BmiCategory.moderatelyUnderweight:
-      return Colors.red;
+      return Colors.indigo;
     case BmiCategory.mildlyUnderweight:
-      return Colors.orange.shade600;
+      return Colors.blue;
     case BmiCategory.normal:
-      return Colors.green.shade600;
+      return Colors.green;
     case BmiCategory.overweight:
-      return Colors.orange.shade700;
+      return Colors.yellow.shade800;
     case BmiCategory.obeseClass1:
-      return Colors.deepOrange.shade600;
+      return Colors.orange;
     case BmiCategory.obeseClass2:
-      return Colors.deepOrange.shade800;
+      return Colors.deepOrange;
     case BmiCategory.obeseClass3:
-      return Colors.brown.shade800;
+      return Colors.red;
   }
 }
 
@@ -90,7 +90,9 @@ class WeightBmiRange {
       '${category.name}: ${min.toStringAsFixed(1)} - ${max.isInfinite ? "∞" : max.toStringAsFixed(1)} kg';
 }
 
-List<WeightBmiRange> getWeightWeightBmiRanges(double heightCm) {
+List<WeightBmiRange> getWeightWeightBmiRanges(double? heightCm) {
+  if (heightCm == null) return [];
+  if (heightCm < 30) return [];
   final heightMeters = heightCm / 100;
   final h2 = heightMeters * heightMeters;
 
@@ -105,3 +107,5 @@ List<WeightBmiRange> getWeightWeightBmiRanges(double heightCm) {
     WeightBmiRange(40 * h2, (40 * h2) + 30, BmiCategory.obeseClass3),
   ];
 }
+
+int plotBandAlpha = 70;

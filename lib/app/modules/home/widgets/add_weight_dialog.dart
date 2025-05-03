@@ -54,7 +54,7 @@ class AddWeightDialog extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   width: double.maxFinite,
-                  color: Colors.grey.withAlpha(70),
+                  color: Colors.grey.withAlpha(plotBandAlpha),
                   child: ValueListenableBuilder(
                     valueListenable: dateNotifier,
                     builder:

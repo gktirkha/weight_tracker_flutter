@@ -23,7 +23,7 @@ class HomeController extends GetxController {
   final isDataLoading = true.obs;
   final isAddLoading = false.obs;
   final selectedDate = DateTime.now().normalizedDate.obs;
-  final selectionType = SelectionTypes.monthly.obs;
+  final selectionType = SelectionTypes.weekly.obs;
   final dummy = <WeightEntry>[];
   final graphList = <WeightEntry>[];
 
@@ -245,7 +245,9 @@ class HomeController extends GetxController {
             })
             .values
             .toList();
-    graphList.addAll(data);
+    graphList.addAll(
+      data.where((element) => element.date.year == selectedDate.value.year),
+    );
     return data;
   }
 
@@ -363,6 +365,7 @@ class HomeController extends GetxController {
         break;
 
       case SelectionTypes.all:
+        compute(all, 'message');
     }
     isDataLoading.value = false;
   }
