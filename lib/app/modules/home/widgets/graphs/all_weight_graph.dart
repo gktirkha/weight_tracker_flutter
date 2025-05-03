@@ -40,7 +40,9 @@ class AllWeightGraph extends GetView<HomeController> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text('Weight: ${entry.weight} kg'),
-                  Text('BMI: ${entry.bmi?.toStringAsFixed(1)}'),
+                  Text(
+                    'BMI: ${calculateBMI(h: controller.user.value?.height, w: entry.weight)}',
+                  ),
                   Text('Category: ${getBmiCategoryLabel(entry.bmiCategory!)}'),
                 ],
               ),

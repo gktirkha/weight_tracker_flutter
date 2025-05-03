@@ -32,7 +32,6 @@ sealed class WeightEntry with _$WeightEntry {
     @JsonKey(name: 'timestamp') required String timestamp,
     @JsonKey(name: 'weight') required double? weight,
     @JsonKey(name: 'notes') required String? notes,
-    @JsonKey(name: 'bmi') required double? bmi,
     @JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,
     @JsonKey(name: 'date') required DateTime date,
   }) = _WeightEntry;

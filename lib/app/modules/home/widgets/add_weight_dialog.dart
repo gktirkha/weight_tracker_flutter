@@ -115,7 +115,6 @@ class AddWeightDialog extends StatelessWidget {
                         notes: notesController.text,
                         timestamp: DateTime.now().toIso8601String(),
                         weight: double.parse(weightController.text),
-                        bmi: bmi,
                         bmiCategory: getBmiCategory(bmi),
                         date: dateNotifier.value.normalizedDate,
                       ),

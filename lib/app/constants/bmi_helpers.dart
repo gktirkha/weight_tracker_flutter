@@ -74,7 +74,9 @@ Color getBmiCategoryColor(BmiCategory category) {
   }
 }
 
-double calculateBMI({required double h, required double w}) {
+double calculateBMI({required double? h, required double? w}) {
+  if (null == h || null == w) return 0;
+  if (h < 10 || w < 2) return 0;
   return (w / ((h / 100) * (h / 100))).toPrecision(2);
 }
 

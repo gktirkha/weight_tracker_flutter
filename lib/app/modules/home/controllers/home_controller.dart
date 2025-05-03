@@ -106,7 +106,7 @@ class HomeController extends GetxController {
         maxWeight: minWt,
         minWeight: maxWt,
         currentWeight: value.weight,
-        currentBMI: value.bmi,
+        currentBMI: calculateBMI(h: user.value?.height, w: value.weight),
         firstLogDate:
             (user.value?.firstLogDate ?? DateTime.now()).normalizedDate,
       );
@@ -237,7 +237,6 @@ class HomeController extends GetxController {
                   timestamp: date.toIso8601String(),
                   weight: average,
                   notes: '',
-                  bmi: bmi,
                   date: date,
                   bmiCategory: getBmiCategory(bmi),
                 ),
@@ -282,7 +281,6 @@ class HomeController extends GetxController {
             timestamp: date.toIso8601String(),
             weight: average,
             notes: '',
-            bmi: bmi,
             date: date,
             bmiCategory: getBmiCategory(bmi),
           );
@@ -331,7 +329,6 @@ class HomeController extends GetxController {
         timestamp: date.toIso8601String(),
         weight: Random().nextDouble() * 100,
         notes: ' ',
-        bmi: bmi,
         date: date,
         bmiCategory: getBmiCategory(bmi),
       );
