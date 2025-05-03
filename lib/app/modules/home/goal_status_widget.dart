@@ -22,7 +22,7 @@ class GoalStatusWidget extends GetView<HomeController> {
                     : '${controller.user.value?.currentWeight}kg',
           ),
           DetailTile(
-            label: 'Targe Weight',
+            label: 'Target Weight',
             value:
                 controller.user.value?.targetWeight == null
                     ? 'Please Set Target Weight'
