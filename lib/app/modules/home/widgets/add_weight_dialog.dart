@@ -8,7 +8,12 @@ import '../../../helpers/date_x.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 
 class AddWeightDialog extends StatelessWidget {
-  AddWeightDialog({super.key, required this.height, this.weightEntry});
+  AddWeightDialog({
+    super.key,
+    required this.height,
+    this.weightEntry,
+    this.allowDateChange = true,
+  });
   late final TextEditingController weightController = TextEditingController(
     text: weightEntry?.weight.toString(),
   );
@@ -18,6 +23,7 @@ class AddWeightDialog extends StatelessWidget {
   late final dateNotifier = ValueNotifier(weightEntry?.date ?? DateTime.now());
   final double height;
   final WeightEntry? weightEntry;
+  final bool allowDateChange;
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +44,22 @@ class AddWeightDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               InkWell(
-                onTap: () {
-                  showDatePicker(
-                    context: context,
-                    firstDate: DateTime.now().subtract(360.days),
-                    lastDate: DateTime.now(),
-                    initialDate: dateNotifier.value,
-                    initialEntryMode: DatePickerEntryMode.calendarOnly,
-                  ).then((value) {
-                    if (value != null) {
-                      dateNotifier.value = value;
-                    }
-                  });
-                },
+                onTap:
+                    allowDateChange
+                        ? () {
+                          showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now().subtract(360.days),
+                            lastDate: DateTime.now(),
+                            initialDate: dateNotifier.value,
+                            initialEntryMode: DatePickerEntryMode.calendarOnly,
+                          ).then((value) {
+                            if (value != null) {
+                              dateNotifier.value = value;
+                            }
+                          });
+                        }
+                        : null,
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   width: double.maxFinite,

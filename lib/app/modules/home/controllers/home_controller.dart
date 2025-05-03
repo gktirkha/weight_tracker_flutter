@@ -26,8 +26,8 @@ class HomeController extends GetxController {
   final isAddLoading = false.obs;
   final selectedDate = DateTime.now().normalizedDate.obs;
   final selectionType = SelectionTypes.weekly.obs;
-  final dummy = <WeightEntry>[];
-  final graphList = <WeightEntry>[];
+
+  final graphList = <WeightEntry>[].obs;
 
   @override
   void onInit() {
@@ -37,7 +37,6 @@ class HomeController extends GetxController {
       }
     });
     checkUser();
-    setDummy();
     selectedDate.listen((p0) {
       isDataLoading.value = true;
       if (null == user.value?.firstLogDate) {
@@ -109,8 +108,11 @@ class HomeController extends GetxController {
         minWeight: maxWt,
         currentWeight: value.weight,
         currentBMI: calculateBMI(h: user.value?.height, w: value.weight),
-        firstLogDate:
-            (user.value?.firstLogDate ?? DateTime.now()).normalizedDate,
+        firstLogDate: [
+          value.date.normalizedDate,
+          (user.value?.firstLogDate ?? DateTime.now()).normalizedDate,
+          DateTime.now().normalizedDate,
+        ].reduce((a, b) => a.isBefore(b) ? a : b),
       );
       if (user.value != null) {
         FirebaseFirestore.instance
@@ -159,6 +161,7 @@ class HomeController extends GetxController {
           .doc(email)
           .set(value.toJson());
       user.value = value;
+      getData();
     });
   }
 
@@ -183,7 +186,7 @@ class HomeController extends GetxController {
     final sevenDayBack = today.subtract(7.days);
 
     final List<WeightEntry> data = [
-      ...dummy.where(
+      ...userWeights.where(
         (element) =>
             element.date.isAfter(sevenDayBack) && !element.date.isAfter(today),
       ),
@@ -195,7 +198,7 @@ class HomeController extends GetxController {
   List<WeightEntry> monthly(String _) {
     final today = selectedDate.value.normalizedDate;
     final List<WeightEntry> data = [
-      ...dummy.where(
+      ...userWeights.where(
         (element) =>
             (element.date.month == today.month) &&
             (element.date.year == today.year),
@@ -209,7 +212,7 @@ class HomeController extends GetxController {
     final today = selectedDate.value;
 
     final List<WeightEntry> data = [
-      ...dummy.where((element) => element.date.year == today.year),
+      ...userWeights.where((element) => element.date.year == today.year),
     ];
     graphList.addAll(data);
     return data;
@@ -218,7 +221,7 @@ class HomeController extends GetxController {
   List<WeightEntry> yearlyAverage(_) {
     final Map<DateTime, List<double>> monthlyWeights = {};
 
-    for (var entry in dummy) {
+    for (var entry in userWeights) {
       int month = entry.date.month;
       int year = entry.date.year;
       final key = DateTime(year, month);
@@ -255,7 +258,7 @@ class HomeController extends GetxController {
     final selectedMonth = selectedDate.value;
     final Map<int, List<double>> weeklyWeights = {};
 
-    for (var entry in dummy) {
+    for (var entry in userWeights) {
       if (entry.date.year == selectedMonth.year &&
           entry.date.month == selectedMonth.month) {
         final week = ((entry.date.day - 1) ~/ 7) + 1;
@@ -290,8 +293,8 @@ class HomeController extends GetxController {
   }
 
   List<WeightEntry> all(_) {
-    graphList.addAll(dummy);
-    return dummy;
+    graphList.addAll(userWeights);
+    return userWeights;
   }
 
   void increaseDate() {
@@ -316,22 +319,6 @@ class HomeController extends GetxController {
       SelectionTypes.yearlyAverage => DateTime(sD.year - 1),
       SelectionTypes.all => sD,
     };
-  }
-
-  void setDummy() {
-    int i = 365;
-    while (i > -1) {
-      final date = DateTime.now().subtract(i.days).normalizedDate;
-      final entry = WeightEntry(
-        timestamp: date.toIso8601String(),
-        weight: Random().nextDouble() * 100,
-        notes: ' ',
-        date: date,
-      );
-      dummy.add(entry);
-      i--;
-    }
-    addDataToGraph();
   }
 
   Future<void> addDataToGraph() async {
@@ -417,4 +404,70 @@ class HomeController extends GetxController {
 
     return journey.abs() / goal;
   }
+
+  void onDeleteItem(WeightEntry item) {
+    isAddLoading.value = true;
+    isDataLoading.value = true;
+    final email = FirebaseAuth.instance.currentUser?.email;
+    if (email == null || user.value == null) {
+      logout();
+      return;
+    }
+
+    final userDoc = FirebaseFirestore.instance
+        .collection(userDbLabel)
+        .doc(email)
+        .collection(weightTrackLabel);
+
+    userDoc.doc(item.date.format(format: appDateFormat)).delete();
+    getData();
+    addDataToGraph();
+    isAddLoading.value = false;
+    isDataLoading.value = false;
+  }
+
+  void onEditItem(WeightEntry item) async {
+    final email = FirebaseAuth.instance.currentUser?.email;
+    if (email == null || user.value == null) {
+      logout();
+      return;
+    }
+
+    final userDoc = FirebaseFirestore.instance
+        .collection(userDbLabel)
+        .doc(email)
+        .collection(weightTrackLabel);
+
+    await Get.dialog<WeightEntry>(
+      AddWeightDialog(
+        height: user.value!.height,
+        weightEntry: item,
+        allowDateChange: false,
+      ),
+    ).then((value) {
+      if (value == null) return;
+      isAddLoading.value = true;
+      isDataLoading.value = true;
+      userDoc.doc(item.date.format(format: appDateFormat)).set(value.toJson());
+      isAddLoading.value = false;
+      isDataLoading.value = false;
+    });
+  }
+
+  // final dummy = <WeightEntry>[];
+  // void setDummy() {
+  //   int i = 365;
+  //   while (i > -1) {
+  //     final date = DateTime.now().subtract(i.days).normalizedDate;
+  //     final entry = WeightEntry(
+  //       timestamp: date.toIso8601String(),
+  //       weight: Random().nextDouble() * 100,
+  //       notes: ' ',
+  //       date: date,
+  //     );
+  //     userWeights.add(entry);
+  //     i--;
+  //   }
+  //   addDataToGraph();
+  // }
 }

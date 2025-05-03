@@ -20,7 +20,7 @@ class GoalGraphWidget extends GetView<HomeController> {
               flipX: (controller.getJourneyDiff() ?? 0).isNegative,
               child: CircularProgressIndicator(
                 strokeWidth: 16,
-                value: controller.getProgressValue()?.abs(),
+                value: (controller.getProgressValue() ?? 0).abs(),
                 backgroundColor: Colors.white,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   (controller.getJourneyDiff() ?? 0).isNegative
