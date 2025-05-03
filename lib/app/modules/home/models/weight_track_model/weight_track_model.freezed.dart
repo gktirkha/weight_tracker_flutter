@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WeightTrackUserModel {
 
-@JsonKey(name: 'email') String get email;@JsonKey(name: 'height') double get height;@JsonKey(name: 'name') String? get name;@JsonKey(name: 'initialWeight') double? get initialWeight;@JsonKey(name: 'targetWeight') double? get targetWeight;@JsonKey(name: 'maxWeight') double? get maxWeight;@JsonKey(name: 'minWeight') double? get minWeight;
+@JsonKey(name: 'email') String get email;@JsonKey(name: 'height') double get height;@JsonKey(name: 'name') String? get name;@JsonKey(name: 'initialWeight') double? get initialWeight;@JsonKey(name: 'targetWeight') double? get targetWeight;@JsonKey(name: 'maxWeight') double? get maxWeight;@JsonKey(name: 'minWeight') double? get minWeight;@JsonKey(name: 'targetMode') TargetMode? get targetMode;
 /// Create a copy of WeightTrackUserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $WeightTrackUserModelCopyWith<WeightTrackUserModel> get copyWith => _$WeightTrac
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeightTrackUserModel&&(identical(other.email, email) || other.email == email)&&(identical(other.height, height) || other.height == height)&&(identical(other.name, name) || other.name == name)&&(identical(other.initialWeight, initialWeight) || other.initialWeight == initialWeight)&&(identical(other.targetWeight, targetWeight) || other.targetWeight == targetWeight)&&(identical(other.maxWeight, maxWeight) || other.maxWeight == maxWeight)&&(identical(other.minWeight, minWeight) || other.minWeight == minWeight));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeightTrackUserModel&&(identical(other.email, email) || other.email == email)&&(identical(other.height, height) || other.height == height)&&(identical(other.name, name) || other.name == name)&&(identical(other.initialWeight, initialWeight) || other.initialWeight == initialWeight)&&(identical(other.targetWeight, targetWeight) || other.targetWeight == targetWeight)&&(identical(other.maxWeight, maxWeight) || other.maxWeight == maxWeight)&&(identical(other.minWeight, minWeight) || other.minWeight == minWeight)&&(identical(other.targetMode, targetMode) || other.targetMode == targetMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,height,name,initialWeight,targetWeight,maxWeight,minWeight);
+int get hashCode => Object.hash(runtimeType,email,height,name,initialWeight,targetWeight,maxWeight,minWeight,targetMode);
 
 @override
 String toString() {
-  return 'WeightTrackUserModel(email: $email, height: $height, name: $name, initialWeight: $initialWeight, targetWeight: $targetWeight, maxWeight: $maxWeight, minWeight: $minWeight)';
+  return 'WeightTrackUserModel(email: $email, height: $height, name: $name, initialWeight: $initialWeight, targetWeight: $targetWeight, maxWeight: $maxWeight, minWeight: $minWeight, targetMode: $targetMode)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $WeightTrackUserModelCopyWith<$Res>  {
   factory $WeightTrackUserModelCopyWith(WeightTrackUserModel value, $Res Function(WeightTrackUserModel) _then) = _$WeightTrackUserModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'email') String email,@JsonKey(name: 'height') double height,@JsonKey(name: 'name') String? name,@JsonKey(name: 'initialWeight') double? initialWeight,@JsonKey(name: 'targetWeight') double? targetWeight,@JsonKey(name: 'maxWeight') double? maxWeight,@JsonKey(name: 'minWeight') double? minWeight
+@JsonKey(name: 'email') String email,@JsonKey(name: 'height') double height,@JsonKey(name: 'name') String? name,@JsonKey(name: 'initialWeight') double? initialWeight,@JsonKey(name: 'targetWeight') double? targetWeight,@JsonKey(name: 'maxWeight') double? maxWeight,@JsonKey(name: 'minWeight') double? minWeight,@JsonKey(name: 'targetMode') TargetMode? targetMode
 });
 
 
@@ -66,7 +66,7 @@ class _$WeightTrackUserModelCopyWithImpl<$Res>
 
 /// Create a copy of WeightTrackUserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? height = null,Object? name = freezed,Object? initialWeight = freezed,Object? targetWeight = freezed,Object? maxWeight = freezed,Object? minWeight = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? height = null,Object? name = freezed,Object? initialWeight = freezed,Object? targetWeight = freezed,Object? maxWeight = freezed,Object? minWeight = freezed,Object? targetMode = freezed,}) {
   return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,8 @@ as String?,initialWeight: freezed == initialWeight ? _self.initialWeight : initi
 as double?,targetWeight: freezed == targetWeight ? _self.targetWeight : targetWeight // ignore: cast_nullable_to_non_nullable
 as double?,maxWeight: freezed == maxWeight ? _self.maxWeight : maxWeight // ignore: cast_nullable_to_non_nullable
 as double?,minWeight: freezed == minWeight ? _self.minWeight : minWeight // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,targetMode: freezed == targetMode ? _self.targetMode : targetMode // ignore: cast_nullable_to_non_nullable
+as TargetMode?,
   ));
 }
 
@@ -86,7 +87,7 @@ as double?,
 @JsonSerializable()
 
 class _WeightTrackUserModel implements WeightTrackUserModel {
-   _WeightTrackUserModel({@JsonKey(name: 'email') required this.email, @JsonKey(name: 'height') required this.height, @JsonKey(name: 'name') this.name, @JsonKey(name: 'initialWeight') this.initialWeight, @JsonKey(name: 'targetWeight') this.targetWeight, @JsonKey(name: 'maxWeight') this.maxWeight, @JsonKey(name: 'minWeight') this.minWeight});
+   _WeightTrackUserModel({@JsonKey(name: 'email') required this.email, @JsonKey(name: 'height') required this.height, @JsonKey(name: 'name') this.name, @JsonKey(name: 'initialWeight') this.initialWeight, @JsonKey(name: 'targetWeight') this.targetWeight, @JsonKey(name: 'maxWeight') this.maxWeight, @JsonKey(name: 'minWeight') this.minWeight, @JsonKey(name: 'targetMode') this.targetMode});
   factory _WeightTrackUserModel.fromJson(Map<String, dynamic> json) => _$WeightTrackUserModelFromJson(json);
 
 @override@JsonKey(name: 'email') final  String email;
@@ -96,6 +97,7 @@ class _WeightTrackUserModel implements WeightTrackUserModel {
 @override@JsonKey(name: 'targetWeight') final  double? targetWeight;
 @override@JsonKey(name: 'maxWeight') final  double? maxWeight;
 @override@JsonKey(name: 'minWeight') final  double? minWeight;
+@override@JsonKey(name: 'targetMode') final  TargetMode? targetMode;
 
 /// Create a copy of WeightTrackUserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -110,16 +112,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeightTrackUserModel&&(identical(other.email, email) || other.email == email)&&(identical(other.height, height) || other.height == height)&&(identical(other.name, name) || other.name == name)&&(identical(other.initialWeight, initialWeight) || other.initialWeight == initialWeight)&&(identical(other.targetWeight, targetWeight) || other.targetWeight == targetWeight)&&(identical(other.maxWeight, maxWeight) || other.maxWeight == maxWeight)&&(identical(other.minWeight, minWeight) || other.minWeight == minWeight));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeightTrackUserModel&&(identical(other.email, email) || other.email == email)&&(identical(other.height, height) || other.height == height)&&(identical(other.name, name) || other.name == name)&&(identical(other.initialWeight, initialWeight) || other.initialWeight == initialWeight)&&(identical(other.targetWeight, targetWeight) || other.targetWeight == targetWeight)&&(identical(other.maxWeight, maxWeight) || other.maxWeight == maxWeight)&&(identical(other.minWeight, minWeight) || other.minWeight == minWeight)&&(identical(other.targetMode, targetMode) || other.targetMode == targetMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,height,name,initialWeight,targetWeight,maxWeight,minWeight);
+int get hashCode => Object.hash(runtimeType,email,height,name,initialWeight,targetWeight,maxWeight,minWeight,targetMode);
 
 @override
 String toString() {
-  return 'WeightTrackUserModel(email: $email, height: $height, name: $name, initialWeight: $initialWeight, targetWeight: $targetWeight, maxWeight: $maxWeight, minWeight: $minWeight)';
+  return 'WeightTrackUserModel(email: $email, height: $height, name: $name, initialWeight: $initialWeight, targetWeight: $targetWeight, maxWeight: $maxWeight, minWeight: $minWeight, targetMode: $targetMode)';
 }
 
 
@@ -130,7 +132,7 @@ abstract mixin class _$WeightTrackUserModelCopyWith<$Res> implements $WeightTrac
   factory _$WeightTrackUserModelCopyWith(_WeightTrackUserModel value, $Res Function(_WeightTrackUserModel) _then) = __$WeightTrackUserModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'email') String email,@JsonKey(name: 'height') double height,@JsonKey(name: 'name') String? name,@JsonKey(name: 'initialWeight') double? initialWeight,@JsonKey(name: 'targetWeight') double? targetWeight,@JsonKey(name: 'maxWeight') double? maxWeight,@JsonKey(name: 'minWeight') double? minWeight
+@JsonKey(name: 'email') String email,@JsonKey(name: 'height') double height,@JsonKey(name: 'name') String? name,@JsonKey(name: 'initialWeight') double? initialWeight,@JsonKey(name: 'targetWeight') double? targetWeight,@JsonKey(name: 'maxWeight') double? maxWeight,@JsonKey(name: 'minWeight') double? minWeight,@JsonKey(name: 'targetMode') TargetMode? targetMode
 });
 
 
@@ -147,7 +149,7 @@ class __$WeightTrackUserModelCopyWithImpl<$Res>
 
 /// Create a copy of WeightTrackUserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? height = null,Object? name = freezed,Object? initialWeight = freezed,Object? targetWeight = freezed,Object? maxWeight = freezed,Object? minWeight = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? height = null,Object? name = freezed,Object? initialWeight = freezed,Object? targetWeight = freezed,Object? maxWeight = freezed,Object? minWeight = freezed,Object? targetMode = freezed,}) {
   return _then(_WeightTrackUserModel(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
@@ -156,7 +158,8 @@ as String?,initialWeight: freezed == initialWeight ? _self.initialWeight : initi
 as double?,targetWeight: freezed == targetWeight ? _self.targetWeight : targetWeight // ignore: cast_nullable_to_non_nullable
 as double?,maxWeight: freezed == maxWeight ? _self.maxWeight : maxWeight // ignore: cast_nullable_to_non_nullable
 as double?,minWeight: freezed == minWeight ? _self.minWeight : minWeight // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,targetMode: freezed == targetMode ? _self.targetMode : targetMode // ignore: cast_nullable_to_non_nullable
+as TargetMode?,
   ));
 }
 

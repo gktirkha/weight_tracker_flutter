@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 
+import '../../../constants/target_mode.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 import '../models/weight_track_model/weight_track_model_x.dart';
 
@@ -25,6 +26,7 @@ class EditUserDialog extends StatelessWidget {
       TextEditingController(text: user?.targetWeight.toString());
   final String email;
   final bool allowDateChange;
+  final targetMode = ValueNotifier(TargetMode.loss);
 
   @override
   Widget build(BuildContext context) {
@@ -70,14 +72,50 @@ class EditUserDialog extends StatelessWidget {
                 ),
                 keyboardType: TextInputType.number,
               ),
-              TextField(
-                controller: targetWeightController,
-                decoration: const InputDecoration(
-                  labelText: 'Target Weight in kg',
-                  hintText: 'Enter your Target Weight in kg',
-                  labelStyle: TextStyle(color: Colors.white),
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  spacing: 16,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: targetWeightController,
+                        decoration: const InputDecoration(
+                          labelText: 'Target Weight in kg',
+                          hintText: 'Enter your Target Weight in kg',
+                          labelStyle: TextStyle(color: Colors.white),
+                        ),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    Expanded(
+                      child: ValueListenableBuilder(
+                        valueListenable: targetMode,
+                        builder: (_, mode, c) {
+                          return DropdownButton(
+                            isExpanded: true,
+                            value: mode,
+                            items: [
+                              DropdownMenuItem(
+                                value: TargetMode.gain,
+                                child: Text('Gain'),
+                              ),
+                              DropdownMenuItem(
+                                value: TargetMode.loss,
+                                child: Text('loss'),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              if (value != null) {
+                                targetMode.value = value;
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                keyboardType: TextInputType.number,
               ),
 
               SizedBox(
@@ -101,6 +139,7 @@ class EditUserDialog extends StatelessWidget {
               height: heightController.text.magicDouble(),
               initialWeight: initialWeightController.text.magicDouble(),
               targetWeight: targetWeightController.text.magicDouble(),
+              targetMode: targetMode.value,
             )
             : user!.copyWith(
               email: email,
@@ -108,6 +147,7 @@ class EditUserDialog extends StatelessWidget {
               height: heightController.text.magicDouble(),
               initialWeight: initialWeightController.text.magicDouble(),
               targetWeight: targetWeightController.text.magicDouble(),
+              targetMode: targetMode.value,
             );
 
     if (parsedUser.isValid) {

@@ -1,0 +1,1 @@
+enum TargetMode { loss, gain }

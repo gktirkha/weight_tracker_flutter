@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../constants/bmi_helpers.dart';
+import '../../../../constants/target_mode.dart';
 
 part 'weight_track_model.freezed.dart';
 part 'weight_track_model.g.dart';
@@ -15,6 +16,7 @@ sealed class WeightTrackUserModel with _$WeightTrackUserModel {
     @JsonKey(name: 'targetWeight') double? targetWeight,
     @JsonKey(name: 'maxWeight') double? maxWeight,
     @JsonKey(name: 'minWeight') double? minWeight,
+    @JsonKey(name: 'targetMode') TargetMode? targetMode,
   }) = _WeightTrackUserModel;
 
   factory WeightTrackUserModel.fromJson(Map<String, dynamic> json) =>

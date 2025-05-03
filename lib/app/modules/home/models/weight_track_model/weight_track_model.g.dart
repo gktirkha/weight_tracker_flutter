@@ -16,6 +16,7 @@ _WeightTrackUserModel _$WeightTrackUserModelFromJson(
   targetWeight: (json['targetWeight'] as num?)?.toDouble(),
   maxWeight: (json['maxWeight'] as num?)?.toDouble(),
   minWeight: (json['minWeight'] as num?)?.toDouble(),
+  targetMode: $enumDecodeNullable(_$TargetModeEnumMap, json['targetMode']),
 );
 
 Map<String, dynamic> _$WeightTrackUserModelToJson(
@@ -28,7 +29,10 @@ Map<String, dynamic> _$WeightTrackUserModelToJson(
   'targetWeight': instance.targetWeight,
   'maxWeight': instance.maxWeight,
   'minWeight': instance.minWeight,
+  'targetMode': _$TargetModeEnumMap[instance.targetMode],
 };
+
+const _$TargetModeEnumMap = {TargetMode.loss: 'loss', TargetMode.gain: 'gain'};
 
 _WeightEntry _$WeightEntryFromJson(Map<String, dynamic> json) => _WeightEntry(
   timestamp: json['timestamp'] as String,
