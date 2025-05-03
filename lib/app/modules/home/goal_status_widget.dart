@@ -27,14 +27,14 @@ class GoalStatusWidget extends GetView<HomeController> {
             value:
                 controller.user.value?.currentWeight == null
                     ? 'Please Log Weight'
-                    : '${controller.user.value?.currentWeight}kg',
+                    : '${controller.user.value?.currentWeight ?? 0}kg',
           ),
           DetailTile(
             label: 'Target Weight',
             value:
                 controller.user.value?.targetWeight == null
                     ? 'Please Set Target Weight'
-                    : '${controller.user.value?.currentWeight}kg',
+                    : '${controller.user.value?.targetWeight ?? 0}kg',
           ),
           DetailTile(
             label: 'Goal Mode',

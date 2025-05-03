@@ -203,11 +203,9 @@ class HomeController extends GetxController {
             .collection(weightTrackLabel)
             .get();
 
-    final data = <WeightEntry>[];
     for (var element in entries.docs) {
-      data.add(WeightEntry.fromJson(element.data()));
+      userWeights.add(WeightEntry.fromJson(element.data()));
     }
-
     addDataToGraph();
   }
 
