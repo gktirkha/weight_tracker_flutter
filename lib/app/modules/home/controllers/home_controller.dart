@@ -16,6 +16,7 @@ import '../../../routes/app_pages.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 import '../widgets/add_weight_dialog.dart';
 import '../widgets/edit_user_dialog.dart';
+import '../widgets/log_tile.dart';
 
 class HomeController extends GetxController {
   final db = FirebaseFirestore.instance;
@@ -175,9 +176,11 @@ class HomeController extends GetxController {
             .collection(weightTrackLabel)
             .get();
 
+    final data = <WeightEntry>[];
     for (var element in entries.docs) {
-      userWeights.add(WeightEntry.fromJson(element.data()));
+      data.add(WeightEntry.fromJson(element.data()));
     }
+
     addDataToGraph();
   }
 
@@ -405,7 +408,30 @@ class HomeController extends GetxController {
     return journey.abs() / goal;
   }
 
-  void onDeleteItem(WeightEntry item) {
+  void onDeleteItem(WeightEntry item) async {
+    final confirmation = await showDialog(
+      context: Get.context!,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Are you sure you want to delete this entry'),
+            content: LogTile(item: item, showActions: false),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Get.back(result: true);
+                },
+                child: Text('Yes'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: Text('No'),
+              ),
+            ],
+          ),
+    );
+    if (true != confirmation) return;
     isAddLoading.value = true;
     isDataLoading.value = true;
     final email = FirebaseAuth.instance.currentUser?.email;
@@ -453,6 +479,8 @@ class HomeController extends GetxController {
       isDataLoading.value = false;
     });
   }
+
+  double? get latestWeight => userWeights.last.weight;
 
   // final dummy = <WeightEntry>[];
   // void setDummy() {
