@@ -29,7 +29,25 @@ class HomeView extends GetView<HomeController> {
           () =>
               controller.isDataLoading.value
                   ? CircularProgressIndicator()
-                  : WeekWeightGraph(),
+                  : Column(
+                    spacing: 16,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: controller.reduceDate,
+                            icon: Icon(Icons.arrow_back_ios),
+                          ),
+                          IconButton(
+                            onPressed: controller.increaseDate,
+                            icon: Icon(Icons.arrow_forward_ios),
+                          ),
+                        ],
+                      ).paddingSymmetric(horizontal: 16),
+                      WeekWeightGraph(),
+                    ],
+                  ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

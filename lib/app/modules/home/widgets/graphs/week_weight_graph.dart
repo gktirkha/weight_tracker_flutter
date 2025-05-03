@@ -99,7 +99,7 @@ class WeekWeightGraph extends GetView<HomeController> {
               height: 16,
               width: 16,
             ),
-            dataSource: controller.userWeights,
+            dataSource: controller.weekly,
             pointColorMapper:
                 (datum, index) => getBmiCategoryColor(datum.bmiCategory!),
             xValueMapper: (data, _) => data.date.format(),

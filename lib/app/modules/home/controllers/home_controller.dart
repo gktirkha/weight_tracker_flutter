@@ -7,6 +7,7 @@ import 'package:magic_extensions/magic_extensions.dart';
 
 import '../../../constants/bmi_helpers.dart';
 import '../../../constants/constants.dart';
+import '../../../constants/selection_types.dart';
 import '../../../helpers/date_x.dart';
 import '../../../routes/app_pages.dart';
 import '../models/weight_track_model/weight_track_model.dart';
@@ -20,6 +21,9 @@ class HomeController extends GetxController {
   final userWeights = <WeightEntry>[].obs;
   final isDataLoading = true.obs;
   final isAddLoading = false.obs;
+  final selectedDate = DateTime.now().normalizedDate.obs;
+  final selectionType = SelectionTypes.weekly.obs;
+  final dummy = <WeightEntry>[];
 
   @override
   void onInit() {
@@ -131,44 +135,144 @@ class HomeController extends GetxController {
     isDataLoading.value = false;
   }
 
-  final tabLabels = ['Week', 'Month', 'Year'];
+  List<WeightEntry> get weekly {
+    final today = selectedDate.value.normalizedDate;
+    final sevenDayBack = today.subtract(7.days);
 
-  List<WeightEntry> get thisWeek {
-    final tomorrow = DateTime.now().normalizedDate.add(1.days);
-    final sevenDayBack = DateTime.now().normalizedDate.subtract(7.days);
     final List<WeightEntry> data = [
-      ...userWeights.where(
+      ...dummy.where(
         (element) =>
-            element.date.isAfter(sevenDayBack) &&
-            element.date.isBefore(tomorrow),
+            element.date.isAfter(sevenDayBack) && !element.date.isAfter(today),
       ),
     ];
+
     return data;
   }
 
-  List<WeightEntry> get thisMonth {
-    final today = DateTime.now().normalizedDate;
-
+  List<WeightEntry> get monthly {
+    final today = selectedDate.value.normalizedDate;
     final List<WeightEntry> data = [
-      ...userWeights.where((element) => element.date.month == today.month),
+      ...dummy.where((element) => element.date.month == today.month),
     ];
     return data;
   }
 
-  List<WeightEntry> get thisYear {
-    final today = DateTime.now().normalizedDate;
+  List<WeightEntry> get yearly {
+    final today = selectedDate.value;
 
     final List<WeightEntry> data = [
-      ...userWeights.where((element) => element.date.year == today.year),
+      ...dummy.where((element) => element.date.year == today.year),
     ];
     return data;
   }
 
-  final dummy = <WeightEntry>[];
+  List<WeightEntry> get yearlyAverage {
+    final Map<DateTime, List<double>> monthlyWeights = {};
+
+    for (var entry in dummy) {
+      int month = entry.date.month;
+      int year = entry.date.year;
+      final key = DateTime(year, month);
+      monthlyWeights.putIfAbsent(key, () => []);
+      if (entry.weight != null) {
+        monthlyWeights[key]!.add(entry.weight!);
+      }
+    }
+
+    return monthlyWeights
+        .map((date, weights) {
+          final average = weights.reduce((a, b) => a + b) / weights.length;
+          final bmi = calculateBMI(h: user.value?.height ?? 0, w: average);
+          return MapEntry(
+            date,
+            WeightEntry(
+              timestamp: date.toIso8601String(),
+              weight: average,
+              notes: '',
+              bmi: bmi,
+              date: date,
+              bmiCategory: getBmiCategory(bmi),
+            ),
+          );
+        })
+        .values
+        .toList();
+  }
+
+  List<WeightEntry> get monthlyAverage {
+    final selectedMonth = selectedDate.value;
+    final Map<int, List<double>> weeklyWeights = {};
+
+    for (var entry in dummy) {
+      if (entry.date.year == selectedMonth.year &&
+          entry.date.month == selectedMonth.month) {
+        final week = ((entry.date.day - 1) ~/ 7) + 1;
+        weeklyWeights.putIfAbsent(week, () => []);
+        if (entry.weight != null) {
+          weeklyWeights[week]!.add(entry.weight!);
+        }
+      }
+    }
+
+    return weeklyWeights.entries.map((entry) {
+      final average = entry.value.reduce((a, b) => a + b) / entry.value.length;
+      final bmi = calculateBMI(h: user.value?.height ?? 0, w: average);
+      final weekStartDay = 1 + (entry.key - 1) * 7;
+      final date = DateTime(
+        selectedMonth.year,
+        selectedMonth.month,
+        weekStartDay,
+      );
+
+      return WeightEntry(
+        timestamp: date.toIso8601String(),
+        weight: average,
+        notes: '',
+        bmi: bmi,
+        date: date,
+        bmiCategory: getBmiCategory(bmi),
+      );
+    }).toList();
+  }
+
+  void increaseDate() {
+    isDataLoading.value = true;
+    final sD = selectedDate.value;
+
+    selectedDate.value = switch (selectionType.value) {
+      SelectionTypes.weekly => sD.add(7.days),
+      SelectionTypes.monthly => DateTime(sD.year + 1),
+      SelectionTypes.yearly => DateTime(sD.year + 1),
+      SelectionTypes.monthlyAverage => DateTime(sD.year, sD.month + 1),
+      SelectionTypes.yearlyAverage => DateTime(sD.year + 1),
+      SelectionTypes.all => sD,
+    };
+    if (selectedDate.value.isAfter(DateTime.now().normalizedDate)) {
+      selectedDate.value = DateTime.now().normalizedDate;
+    }
+    isDataLoading.value = false;
+  }
+
+  void reduceDate() {
+    isDataLoading.value = true;
+    final sD = selectedDate.value;
+
+    selectedDate.value = switch (selectionType.value) {
+      SelectionTypes.weekly => sD.subtract(7.days),
+      SelectionTypes.monthly => DateTime(sD.year - 1),
+      SelectionTypes.yearly => DateTime(sD.year - 1),
+      SelectionTypes.monthlyAverage => DateTime(sD.year, sD.month - 1),
+      SelectionTypes.yearlyAverage => DateTime(sD.year - 1),
+      SelectionTypes.all => sD,
+    };
+
+    isDataLoading.value = false;
+  }
+
   void setDummy() {
     isDataLoading.value = true;
     int i = 365;
-    while (i > 0) {
+    while (i > -1) {
       final date = DateTime.now().subtract(i.days).normalizedDate;
       final wt = Random().nextDouble() * 140;
       final bmi = calculateBMI(h: 170, w: wt);

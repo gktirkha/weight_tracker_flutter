@@ -8,4 +8,9 @@ extension DateX on DateTime? {
 
     return DateTime(year, month, day);
   }
+
+  DateTime get lastDayOfMonth {
+    final date = normalizedDate;
+    return DateTime(date.year, date.month + 1, 0);
+  }
 }
