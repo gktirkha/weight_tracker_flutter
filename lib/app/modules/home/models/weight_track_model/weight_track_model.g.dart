@@ -23,6 +23,10 @@ _WeightTrackUserModel _$WeightTrackUserModelFromJson(
           : DateTime.parse(json['firstLogDate'] as String),
   currentWeight: (json['currentWeight'] as num?)?.toDouble(),
   currentBMI: (json['currentBMI'] as num?)?.toDouble(),
+  lastWeightDate:
+      json['lastWeightDate'] == null
+          ? null
+          : DateTime.parse(json['lastWeightDate'] as String),
 );
 
 Map<String, dynamic> _$WeightTrackUserModelToJson(
@@ -39,6 +43,7 @@ Map<String, dynamic> _$WeightTrackUserModelToJson(
   'firstLogDate': instance.firstLogDate?.toIso8601String(),
   'currentWeight': instance.currentWeight,
   'currentBMI': instance.currentBMI,
+  'lastWeightDate': instance.lastWeightDate?.toIso8601String(),
 };
 
 const _$TargetModeEnumMap = {TargetMode.loss: 'loss', TargetMode.gain: 'gain'};

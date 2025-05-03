@@ -84,6 +84,7 @@ class HomeController extends GetxController {
       logout();
       return;
     }
+
     final now = DateTime.now();
     final userDoc = FirebaseFirestore.instance
         .collection(userDbLabel)
@@ -99,30 +100,56 @@ class HomeController extends GetxController {
         weightEntry:
             todaysLog.exists ? WeightEntry.fromJson(todaysLog.data()!) : null,
       ),
-    ).then((value) {
+    ).then((value) async {
       if (value == null) return;
-      userDoc.doc(value.date.format(format: appDateFormat)).set(value.toJson());
-      final maxWt = max((user.value?.maxWeight ?? 0), (value.weight ?? 0));
-      final minWt = min((user.value?.minWeight ?? 500), (value.weight ?? 500));
-      user.value = user.value?.copyWith(
-        maxWeight: minWt,
-        minWeight: maxWt,
-        currentWeight: value.weight,
-        currentBMI: calculateBMI(h: user.value?.height, w: value.weight),
-        firstLogDate: [
-          value.date.normalizedDate,
-          (user.value?.firstLogDate ?? DateTime.now()).normalizedDate,
-          DateTime.now().normalizedDate,
-        ].reduce((a, b) => a.isBefore(b) ? a : b),
+
+      final logDate = value.date.normalizedDate;
+      await userDoc
+          .doc(logDate.format(format: appDateFormat))
+          .set(value.toJson());
+
+      final previousUser = user.value!;
+      final maxWt = max((previousUser.maxWeight ?? 0), (value.weight ?? 0));
+      final minWt = min(
+        (previousUser.minWeight ?? 5000),
+        (value.weight ?? 5000),
       );
-      if (user.value != null) {
-        FirebaseFirestore.instance
-            .collection(userDbLabel)
-            .doc(email)
-            .set(user.value?.toJson() ?? {});
-      }
+
+      final currentWeightDate =
+          previousUser.lastWeightDate?.normalizedDate ?? DateTime(1900);
+      final isNewerLog = logDate.isAfter(currentWeightDate);
+
+      final updatedFirstLogDate = [
+        logDate,
+        (previousUser.firstLogDate ?? logDate).normalizedDate,
+        now.normalizedDate,
+      ].reduce((a, b) => a.isBefore(b) ? a : b);
+
+      final updatedOldestDate = [
+        logDate,
+        previousUser.lastWeightDate ?? logDate,
+      ].reduce((a, b) => a.isBefore(b) ? a : b);
+
+      user.value = previousUser.copyWith(
+        maxWeight: maxWt,
+        minWeight: minWt,
+        currentWeight: isNewerLog ? value.weight : previousUser.currentWeight,
+        currentBMI:
+            isNewerLog
+                ? calculateBMI(h: previousUser.height, w: value.weight)
+                : previousUser.currentBMI,
+        lastWeightDate: updatedOldestDate,
+        firstLogDate: updatedFirstLogDate,
+      );
+
+      await FirebaseFirestore.instance
+          .collection(userDbLabel)
+          .doc(email)
+          .set(user.value!.toJson());
+
       getData();
     });
+
     isAddLoading.value = false;
   }
 
