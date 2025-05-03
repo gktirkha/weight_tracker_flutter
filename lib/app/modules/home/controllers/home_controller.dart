@@ -40,6 +40,7 @@ class HomeController extends GetxController {
       addDataToGraph();
     });
     selectionType.listen((p0) {
+      selectedDate.value = DateTime.now().normalizedDate;
       addDataToGraph();
     });
     super.onInit();
@@ -76,12 +77,19 @@ class HomeController extends GetxController {
       userDoc.doc(value.date.format(format: appDateFormat)).set(value.toJson());
       final maxWt = max((user.value?.maxWeight ?? 0), (value.weight ?? 0));
       final minWt = min((user.value?.minWeight ?? 500), (value.weight ?? 500));
-      user.value = user.value?.copyWith(maxWeight: minWt, minWeight: maxWt);
+      user.value = user.value?.copyWith(
+        maxWeight: minWt,
+        minWeight: maxWt,
+        currentWeight: value.weight,
+        currentBMI: value.bmi,
+        firstLogDate:
+            (user.value?.firstLogDate ?? DateTime.now()).normalizedDate,
+      );
       if (user.value != null) {
         FirebaseFirestore.instance
             .collection(userDbLabel)
             .doc(email)
-            .set(user.value!.toJson());
+            .set(user.value?.toJson() ?? {});
       }
       getData();
     });
@@ -273,9 +281,6 @@ class HomeController extends GetxController {
       SelectionTypes.yearlyAverage => DateTime(sD.year + 1),
       SelectionTypes.all => sD,
     };
-    if (selectedDate.value.isAfter(DateTime.now().normalizedDate)) {
-      selectedDate.value = DateTime.now().normalizedDate;
-    }
   }
 
   void reduceDate() {
