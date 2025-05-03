@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 
@@ -230,7 +231,7 @@ class HomeController extends GetxController {
         monthlyWeights
             .map((date, weights) {
               final average = weights.reduce((a, b) => a + b) / weights.length;
-              final bmi = calculateBMI(h: user.value?.height ?? 0, w: average);
+
               return MapEntry(
                 date,
                 WeightEntry(
@@ -238,7 +239,6 @@ class HomeController extends GetxController {
                   weight: average,
                   notes: '',
                   date: date,
-                  bmiCategory: getBmiCategory(bmi),
                 ),
               );
             })
@@ -269,7 +269,6 @@ class HomeController extends GetxController {
         weeklyWeights.entries.map((entry) {
           final average =
               entry.value.reduce((a, b) => a + b) / entry.value.length;
-          final bmi = calculateBMI(h: user.value?.height ?? 0, w: average);
           final weekStartDay = 1 + (entry.key - 1) * 7;
           final date = DateTime(
             selectedMonth.year,
@@ -282,7 +281,6 @@ class HomeController extends GetxController {
             weight: average,
             notes: '',
             date: date,
-            bmiCategory: getBmiCategory(bmi),
           );
         }).toList();
 
@@ -323,14 +321,11 @@ class HomeController extends GetxController {
     int i = 365;
     while (i > -1) {
       final date = DateTime.now().subtract(i.days).normalizedDate;
-      final wt = Random().nextDouble() * 140;
-      final bmi = calculateBMI(h: 170, w: wt);
       final entry = WeightEntry(
         timestamp: date.toIso8601String(),
         weight: Random().nextDouble() * 100,
         notes: ' ',
         date: date,
-        bmiCategory: getBmiCategory(bmi),
       );
       dummy.add(entry);
       i--;
@@ -368,4 +363,20 @@ class HomeController extends GetxController {
   }
 
   double? get initialWeight => user.value?.initialWeight;
+
+  double getBMI(double? wt) {
+    return calculateBMI(h: user.value?.height, w: wt);
+  }
+
+  BmiCategory getBMICat(double? wt) {
+    return getBmiCategory(getBMI(wt));
+  }
+
+  Color getBmiColor(double? wt) {
+    return getBmiCategoryColor(getBMICat(wt));
+  }
+
+  String getBmiLab(double? wt) {
+    return getBmiCategoryLabel(getBmiCategory(getBMI(wt)));
+  }
 }

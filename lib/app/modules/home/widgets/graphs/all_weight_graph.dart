@@ -30,7 +30,7 @@ class AllWeightGraph extends GetView<HomeController> {
             return Container(
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: getBmiCategoryColor(data.bmiCategory!),
+                color: controller.getBmiColor(entry.weight),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -43,7 +43,7 @@ class AllWeightGraph extends GetView<HomeController> {
                   Text(
                     'BMI: ${calculateBMI(h: controller.user.value?.height, w: entry.weight)}',
                   ),
-                  Text('Category: ${getBmiCategoryLabel(entry.bmiCategory!)}'),
+                  Text('Category: ${controller.getBmiLab(entry.weight)}'),
                 ],
               ),
             );
@@ -105,7 +105,7 @@ class AllWeightGraph extends GetView<HomeController> {
             ),
             dataSource: controller.graphList,
             pointColorMapper:
-                (datum, index) => getBmiCategoryColor(datum.bmiCategory!),
+                (datum, index) => controller.getBmiColor(datum.weight),
             xValueMapper: (data, _) => data.date.format(),
             yValueMapper: (data, _) => data.weight,
           ),

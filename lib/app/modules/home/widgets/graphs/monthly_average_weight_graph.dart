@@ -28,7 +28,7 @@ class MonthlyAverageWeightGraph extends GetView<HomeController> {
             return Container(
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: getBmiCategoryColor(data.bmiCategory!),
+                color: controller.getBmiColor(entry.weight),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -38,8 +38,8 @@ class MonthlyAverageWeightGraph extends GetView<HomeController> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text('Weight: ${entry.weight} kg'),
-                  Text('BMI: ${entry.bmi?.toStringAsFixed(1)}'),
-                  Text('Category: ${getBmiCategoryLabel(entry.bmiCategory!)}'),
+                  Text('BMI: ${controller.getBMI(entry.weight)}'),
+                  Text('Category: ${controller.getBmiLab(entry.weight)}'),
                 ],
               ),
             );
@@ -101,7 +101,7 @@ class MonthlyAverageWeightGraph extends GetView<HomeController> {
             ),
             dataSource: controller.graphList,
             pointColorMapper:
-                (datum, index) => getBmiCategoryColor(datum.bmiCategory!),
+                (datum, index) => controller.getBmiColor(datum.weight),
             xValueMapper: (data, index) => 'Week ${index + 1}',
             yValueMapper: (data, _) => data.weight,
           ),

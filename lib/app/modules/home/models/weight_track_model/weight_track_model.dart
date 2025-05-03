@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../constants/bmi_helpers.dart';
 import '../../../../constants/target_mode.dart';
 
 part 'weight_track_model.freezed.dart';
@@ -32,7 +31,6 @@ sealed class WeightEntry with _$WeightEntry {
     @JsonKey(name: 'timestamp') required String timestamp,
     @JsonKey(name: 'weight') required double? weight,
     @JsonKey(name: 'notes') required String? notes,
-    @JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,
     @JsonKey(name: 'date') required DateTime date,
   }) = _WeightEntry;
 

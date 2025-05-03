@@ -109,13 +109,12 @@ class AddWeightDialog extends StatelessWidget {
                       return;
                     }
 
-                    final bmi = calculateBMI(h: height, w: weight);
                     Get.back(
                       result: WeightEntry(
                         notes: notesController.text,
                         timestamp: DateTime.now().toIso8601String(),
                         weight: double.parse(weightController.text),
-                        bmiCategory: getBmiCategory(bmi),
+
                         date: dateNotifier.value.normalizedDate,
                       ),
                     );

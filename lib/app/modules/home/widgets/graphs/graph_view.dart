@@ -16,45 +16,47 @@ class GraphView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ConstrainedBox(
-          constraints: BoxConstraints(minHeight: 450, maxHeight: 450),
-          child: switch (controller.selectionType.value) {
-            SelectionTypes.weekly => WeeklyWeightGraph(),
+    return Obx(
+      () => Column(
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 450, maxHeight: 450),
+            child: switch (controller.selectionType.value) {
+              SelectionTypes.weekly => WeeklyWeightGraph(),
 
-            SelectionTypes.monthly => MonthlyWeightGraph(),
+              SelectionTypes.monthly => MonthlyWeightGraph(),
 
-            SelectionTypes.yearly => YearlyWeightGraph(),
+              SelectionTypes.yearly => YearlyWeightGraph(),
 
-            SelectionTypes.monthlyAverage => MonthlyAverageWeightGraph(),
+              SelectionTypes.monthlyAverage => MonthlyAverageWeightGraph(),
 
-            SelectionTypes.yearlyAverage => YearlyAverageWeightGraph(),
+              SelectionTypes.yearlyAverage => YearlyAverageWeightGraph(),
 
-            SelectionTypes.all => AllWeightGraph(),
-          },
-        ),
+              SelectionTypes.all => AllWeightGraph(),
+            },
+          ),
 
-        Wrap(
-          runSpacing: 16,
-          spacing: 16,
-          children: [
-            ...BmiCategory.values.map(
-              (e) => Row(
-                spacing: 8,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    radius: 8,
-                    backgroundColor: getBmiCategoryColor(e),
-                  ),
-                  Text(getBmiCategoryLabel(e)),
-                ],
+          Wrap(
+            runSpacing: 16,
+            spacing: 16,
+            children: [
+              ...BmiCategory.values.map(
+                (e) => Row(
+                  spacing: 8,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(
+                      radius: 8,
+                      backgroundColor: getBmiCategoryColor(e),
+                    ),
+                    Text(getBmiCategoryLabel(e)),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

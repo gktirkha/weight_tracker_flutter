@@ -16,13 +16,17 @@ class GoalStatusWidget extends GetView<HomeController> {
         children: [
           DetailTile(
             label: 'Current Weight',
-            value: controller.user.value?.currentWeight ?? 'Please Log Weight',
+            value:
+                controller.user.value?.currentWeight == null
+                    ? 'Please Log Weight'
+                    : '${controller.user.value?.currentWeight}kg',
           ),
           DetailTile(
             label: 'Targe Weight',
             value:
-                controller.user.value?.targetWeight ??
-                'Please Set Target Weight',
+                controller.user.value?.targetWeight == null
+                    ? 'Please Set Target Weight'
+                    : '${controller.user.value?.currentWeight}kg',
           ),
           DetailTile(
             label: 'Goal Mode',
@@ -37,6 +41,13 @@ class GoalStatusWidget extends GetView<HomeController> {
             label: 'Current BMI',
             value:
                 controller.user.value?.currentBMI ?? 'Please Log some weight',
+          ),
+          DetailTile(
+            label: 'Your Height',
+            value:
+                controller.user.value?.height == null
+                    ? 'Please Set Height'
+                    : '${controller.user.value?.height}cm',
           ),
         ],
       ),
