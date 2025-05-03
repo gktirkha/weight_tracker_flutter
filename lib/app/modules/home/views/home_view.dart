@@ -5,6 +5,7 @@ import 'package:magic_extensions/magic_extensions.dart';
 import '../../../constants/selection_types.dart';
 import '../controllers/home_controller.dart';
 import '../goal_status_widget.dart';
+import '../widgets/goal_graph_widget.dart';
 import '../widgets/graphs/graph_view.dart';
 import '../widgets/home_app_drawer.dart';
 
@@ -51,28 +52,58 @@ class HomeView extends GetView<HomeController> {
           () =>
               controller.isDataLoading.value
                   ? CircularProgressIndicator()
-                  : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 16,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  : CustomScrollView(
+                    slivers: [
+                      PinnedHeaderSliver(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: controller.reduceDate,
+                              icon: Icon(Icons.arrow_back_ios),
+                            ),
+                            IconButton(
+                              onPressed: controller.increaseDate,
+                              icon: Icon(Icons.arrow_forward_ios),
+                            ),
+                          ],
+                        ).marginSymmetric(horizontal: 16),
+                      ),
+                      SliverList.list(
                         children: [
-                          IconButton(
-                            onPressed: controller.reduceDate,
-                            icon: Icon(Icons.arrow_back_ios),
-                          ),
-                          IconButton(
-                            onPressed: controller.increaseDate,
-                            icon: Icon(Icons.arrow_forward_ios),
-                          ),
+                          16.height(),
+                          GraphView(),
+                          16.height(),
+                          IntrinsicHeight(
+                            child: Row(
+                              spacing: 16,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: GoalStatusWidget(),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: GoalGraphWidget(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ).marginSymmetric(horizontal: 32),
                         ],
-                      ).marginSymmetric(horizontal: 16),
-                      GraphView(),
-                      16.height(),
-                      Column(
-                        children: [GoalStatusWidget()],
-                      ).marginSymmetric(horizontal: 16),
+                      ),
                     ],
                   ),
         ),

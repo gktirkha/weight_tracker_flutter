@@ -10,6 +10,7 @@ import 'package:magic_extensions/magic_extensions.dart';
 import '../../../constants/bmi_helpers.dart';
 import '../../../constants/constants.dart';
 import '../../../constants/selection_types.dart';
+import '../../../constants/target_mode.dart';
 import '../../../helpers/date_x.dart';
 import '../../../routes/app_pages.dart';
 import '../models/weight_track_model/weight_track_model.dart';
@@ -378,5 +379,42 @@ class HomeController extends GetxController {
 
   String getBmiLab(double? wt) {
     return getBmiCategoryLabel(getBmiCategory(getBMI(wt)));
+  }
+
+  double? getJourneyDiff() {
+    if (null == user.value?.targetMode ||
+        null == user.value?.initialWeight ||
+        null == user.value?.currentWeight) {
+      return null;
+    }
+
+    return switch (user.value?.targetMode) {
+      TargetMode.loss =>
+        (user.value?.initialWeight ?? 0) - (user.value?.currentWeight ?? 0),
+
+      TargetMode.gain =>
+        (user.value?.currentWeight ?? 0) - (user.value?.initialWeight ?? 0),
+
+      null => null,
+    };
+  }
+
+  double? getGoalDiff() {
+    if (null == user.value?.targetMode ||
+        null == user.value?.initialWeight ||
+        null == user.value?.currentWeight) {
+      return null;
+    }
+
+    return ((user.value?.initialWeight ?? 0) - (user.value?.targetWeight ?? 0));
+  }
+
+  double? getProgressValue() {
+    final journey = getJourneyDiff();
+    final goal = getGoalDiff();
+
+    if (journey == null || goal == null || goal == 0) return null;
+
+    return journey.abs() / goal;
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:magic_extensions/magic_extensions.dart';
 
 import '../../constants/target_mode.dart';
 import 'controllers/home_controller.dart';
+import 'detail_tile.dart';
 
 class GoalStatusWidget extends GetView<HomeController> {
   const GoalStatusWidget({super.key});
@@ -11,9 +13,15 @@ class GoalStatusWidget extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Obx(
       () => Column(
-        spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 16,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text('Stats', style: TextStyle(fontSize: 24))],
+          ),
+          16.height(),
           DetailTile(
             label: 'Current Weight',
             value:
@@ -53,25 +61,6 @@ class GoalStatusWidget extends GetView<HomeController> {
                     ? 'Please Set Height'
                     : '${controller.user.value?.height}cm',
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class DetailTile extends StatelessWidget {
-  const DetailTile({super.key, required this.label, required this.value});
-  final String label;
-  final dynamic value;
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: TextStyle(color: Colors.white),
-        children: [
-          TextSpan(text: '$label: '),
-          TextSpan(text: value?.toString()),
         ],
       ),
     );
