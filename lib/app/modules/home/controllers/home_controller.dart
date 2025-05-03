@@ -101,23 +101,28 @@ class HomeController extends GetxController {
             todaysLog.exists ? WeightEntry.fromJson(todaysLog.data()!) : null,
       ),
     ).then((value) async {
-      if (value == null) return;
+      if (value == null || value.weight == null) {
+        isAddLoading.value = false;
+        return;
+      }
 
       final logDate = value.date.normalizedDate;
+      final weight = value.weight!;
+
       await userDoc
           .doc(logDate.format(format: appDateFormat))
           .set(value.toJson());
 
       final previousUser = user.value!;
-      final maxWt = max((previousUser.maxWeight ?? 0), (value.weight ?? 0));
-      final minWt = min(
-        (previousUser.minWeight ?? 5000),
-        (value.weight ?? 5000),
-      );
 
-      final currentWeightDate =
-          previousUser.lastWeightDate?.normalizedDate ?? DateTime(1900);
-      final isNewerLog = logDate.isAfter(currentWeightDate);
+      // Fallback to current weight for initial min/max
+      final maxWt = max(previousUser.maxWeight ?? weight, weight);
+      final minWt = min(previousUser.minWeight ?? weight, weight);
+
+      // Compare new entry with existing oldest date
+      final existingOldestDate =
+          previousUser.lastWeightDate?.normalizedDate ?? logDate;
+      final isOlderLog = logDate.isBefore(existingOldestDate);
 
       final updatedFirstLogDate = [
         logDate,
@@ -125,20 +130,16 @@ class HomeController extends GetxController {
         now.normalizedDate,
       ].reduce((a, b) => a.isBefore(b) ? a : b);
 
-      final updatedOldestDate = [
-        logDate,
-        previousUser.lastWeightDate ?? logDate,
-      ].reduce((a, b) => a.isBefore(b) ? a : b);
-
       user.value = previousUser.copyWith(
         maxWeight: maxWt,
         minWeight: minWt,
-        currentWeight: isNewerLog ? value.weight : previousUser.currentWeight,
+        currentWeight:
+            isOlderLog ? weight : previousUser.currentWeight ?? weight,
         currentBMI:
-            isNewerLog
-                ? calculateBMI(h: previousUser.height, w: value.weight)
+            isOlderLog
+                ? calculateBMI(h: previousUser.height, w: weight)
                 : previousUser.currentBMI,
-        lastWeightDate: updatedOldestDate,
+        lastWeightDate: isOlderLog ? logDate : previousUser.lastWeightDate,
         firstLogDate: updatedFirstLogDate,
       );
 
@@ -148,9 +149,8 @@ class HomeController extends GetxController {
           .set(user.value!.toJson());
 
       getData();
+      isAddLoading.value = false;
     });
-
-    isAddLoading.value = false;
   }
 
   final user = Rxn<WeightTrackUserModel>();
@@ -206,6 +206,7 @@ class HomeController extends GetxController {
     for (var element in entries.docs) {
       userWeights.add(WeightEntry.fromJson(element.data()));
     }
+    userWeights.sort((a, b) => a.date.compareTo(b.date));
     addDataToGraph();
   }
 
