@@ -36,7 +36,7 @@ _WeightEntry _$WeightEntryFromJson(Map<String, dynamic> json) => _WeightEntry(
   notes: json['notes'] as String?,
   bmi: (json['bmi'] as num?)?.toDouble(),
   bmiCategory: $enumDecodeNullable(_$BmiCategoryEnumMap, json['bmiCategory']),
-  date: json['date'] as String?,
+  date: json['date'] == null ? null : DateTime.parse(json['date'] as String),
 );
 
 Map<String, dynamic> _$WeightEntryToJson(_WeightEntry instance) =>
@@ -46,7 +46,7 @@ Map<String, dynamic> _$WeightEntryToJson(_WeightEntry instance) =>
       'notes': instance.notes,
       'bmi': instance.bmi,
       'bmiCategory': _$BmiCategoryEnumMap[instance.bmiCategory],
-      'date': instance.date,
+      'date': instance.date?.toIso8601String(),
     };
 
 const _$BmiCategoryEnumMap = {

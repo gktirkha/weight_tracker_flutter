@@ -167,7 +167,7 @@ as double?,
 /// @nodoc
 mixin _$WeightEntry {
 
-@JsonKey(name: 'timestamp') String get timestamp;@JsonKey(name: 'weight') double? get weight;@JsonKey(name: 'notes') String? get notes;@JsonKey(name: 'bmi') double? get bmi;@JsonKey(name: 'bmiCategory') BmiCategory? get bmiCategory;@JsonKey(name: 'date') String? get date;
+@JsonKey(name: 'timestamp') String get timestamp;@JsonKey(name: 'weight') double? get weight;@JsonKey(name: 'notes') String? get notes;@JsonKey(name: 'bmi') double? get bmi;@JsonKey(name: 'bmiCategory') BmiCategory? get bmiCategory;@JsonKey(name: 'date') DateTime? get date;
 /// Create a copy of WeightEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -200,7 +200,7 @@ abstract mixin class $WeightEntryCopyWith<$Res>  {
   factory $WeightEntryCopyWith(WeightEntry value, $Res Function(WeightEntry) _then) = _$WeightEntryCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'timestamp') String timestamp,@JsonKey(name: 'weight') double? weight,@JsonKey(name: 'notes') String? notes,@JsonKey(name: 'bmi') double? bmi,@JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,@JsonKey(name: 'date') String? date
+@JsonKey(name: 'timestamp') String timestamp,@JsonKey(name: 'weight') double? weight,@JsonKey(name: 'notes') String? notes,@JsonKey(name: 'bmi') double? bmi,@JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,@JsonKey(name: 'date') DateTime? date
 });
 
 
@@ -225,7 +225,7 @@ as double?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullabl
 as String?,bmi: freezed == bmi ? _self.bmi : bmi // ignore: cast_nullable_to_non_nullable
 as double?,bmiCategory: freezed == bmiCategory ? _self.bmiCategory : bmiCategory // ignore: cast_nullable_to_non_nullable
 as BmiCategory?,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String?,
+as DateTime?,
   ));
 }
 
@@ -244,7 +244,7 @@ class _WeightEntry implements WeightEntry {
 @override@JsonKey(name: 'notes') final  String? notes;
 @override@JsonKey(name: 'bmi') final  double? bmi;
 @override@JsonKey(name: 'bmiCategory') final  BmiCategory? bmiCategory;
-@override@JsonKey(name: 'date') final  String? date;
+@override@JsonKey(name: 'date') final  DateTime? date;
 
 /// Create a copy of WeightEntry
 /// with the given fields replaced by the non-null parameter values.
@@ -279,7 +279,7 @@ abstract mixin class _$WeightEntryCopyWith<$Res> implements $WeightEntryCopyWith
   factory _$WeightEntryCopyWith(_WeightEntry value, $Res Function(_WeightEntry) _then) = __$WeightEntryCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'timestamp') String timestamp,@JsonKey(name: 'weight') double? weight,@JsonKey(name: 'notes') String? notes,@JsonKey(name: 'bmi') double? bmi,@JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,@JsonKey(name: 'date') String? date
+@JsonKey(name: 'timestamp') String timestamp,@JsonKey(name: 'weight') double? weight,@JsonKey(name: 'notes') String? notes,@JsonKey(name: 'bmi') double? bmi,@JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,@JsonKey(name: 'date') DateTime? date
 });
 
 
@@ -304,7 +304,7 @@ as double?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullabl
 as String?,bmi: freezed == bmi ? _self.bmi : bmi // ignore: cast_nullable_to_non_nullable
 as double?,bmiCategory: freezed == bmiCategory ? _self.bmiCategory : bmiCategory // ignore: cast_nullable_to_non_nullable
 as BmiCategory?,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String?,
+as DateTime?,
   ));
 }
 

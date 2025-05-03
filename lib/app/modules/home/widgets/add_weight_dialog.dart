@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 
-import '../constants/bmi_helpers.dart';
-import '../constants/constants.dart';
+import '../../../constants/bmi_helpers.dart';
+import '../../../constants/constants.dart';
+import '../../../helpers/date_x.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 
 class AddWeightDialog extends StatelessWidget {
@@ -14,9 +15,7 @@ class AddWeightDialog extends StatelessWidget {
   late final TextEditingController notesController = TextEditingController(
     text: weightEntry?.notes,
   );
-  late final dateNotifier = ValueNotifier(
-    weightEntry?.date.parseDate(appDateFormat) ?? DateTime.now(),
-  );
+  late final dateNotifier = ValueNotifier(weightEntry?.date ?? DateTime.now());
   final double height;
   final WeightEntry? weightEntry;
 
@@ -119,7 +118,7 @@ class AddWeightDialog extends StatelessWidget {
                         weight: double.parse(weightController.text),
                         bmi: bmi,
                         bmiCategory: getBmiCategory(bmi),
-                        date: dateNotifier.value.format(format: appDateFormat),
+                        date: dateNotifier.value.normalizedDate,
                       ),
                     );
                   },

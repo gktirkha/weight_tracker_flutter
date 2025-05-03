@@ -5,8 +5,7 @@ import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../../constants/bmi_helpers.dart';
-import '../../constants/constants.dart';
+import '../../../../constants/bmi_helpers.dart';
 import '../../controllers/home_controller.dart';
 import '../../models/weight_track_model/weight_track_model.dart';
 
@@ -103,8 +102,7 @@ class WeekWeightGraph extends GetView<HomeController> {
             dataSource: controller.userWeights,
             pointColorMapper:
                 (datum, index) => getBmiCategoryColor(datum.bmiCategory!),
-            xValueMapper:
-                (data, _) => data.date!.parseDate(appDateFormat).format(),
+            xValueMapper: (data, _) => data.date!.format(),
             yValueMapper: (data, _) => data.weight,
           ),
         ],
