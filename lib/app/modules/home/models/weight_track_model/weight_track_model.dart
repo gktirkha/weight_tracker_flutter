@@ -29,7 +29,7 @@ sealed class WeightEntry with _$WeightEntry {
     @JsonKey(name: 'notes') required String? notes,
     @JsonKey(name: 'bmi') required double? bmi,
     @JsonKey(name: 'bmiCategory') BmiCategory? bmiCategory,
-    @JsonKey(name: 'date') required DateTime? date,
+    @JsonKey(name: 'date') required DateTime date,
   }) = _WeightEntry;
 
   factory WeightEntry.fromJson(Map<String, dynamic> json) =>

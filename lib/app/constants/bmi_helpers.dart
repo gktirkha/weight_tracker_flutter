@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 enum BmiCategory {
   severelyUnderweight,
@@ -71,6 +72,10 @@ Color getBmiCategoryColor(BmiCategory category) {
     case BmiCategory.obeseClass3:
       return Colors.brown.shade800;
   }
+}
+
+double calculateBMI({required double h, required double w}) {
+  return (w / ((h / 100) * (h / 100))).toPrecision(2);
 }
 
 class WeightBmiRange {

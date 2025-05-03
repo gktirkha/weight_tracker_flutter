@@ -5,7 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 
+import '../../../constants/bmi_helpers.dart';
 import '../../../constants/constants.dart';
+import '../../../helpers/date_x.dart';
 import '../../../routes/app_pages.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 import '../widgets/add_weight_dialog.dart';
@@ -27,6 +29,7 @@ class HomeController extends GetxController {
       }
     });
     checkUser();
+    setDummy();
     super.onInit();
   }
 
@@ -124,6 +127,61 @@ class HomeController extends GetxController {
 
     for (var element in entries.docs) {
       userWeights.add(WeightEntry.fromJson(element.data()));
+    }
+    isDataLoading.value = false;
+  }
+
+  final tabLabels = ['Week', 'Month', 'Year'];
+
+  List<WeightEntry> get thisWeek {
+    final tomorrow = DateTime.now().normalizedDate.add(1.days);
+    final sevenDayBack = DateTime.now().normalizedDate.subtract(7.days);
+    final List<WeightEntry> data = [
+      ...userWeights.where(
+        (element) =>
+            element.date.isAfter(sevenDayBack) &&
+            element.date.isBefore(tomorrow),
+      ),
+    ];
+    return data;
+  }
+
+  List<WeightEntry> get thisMonth {
+    final today = DateTime.now().normalizedDate;
+
+    final List<WeightEntry> data = [
+      ...userWeights.where((element) => element.date.month == today.month),
+    ];
+    return data;
+  }
+
+  List<WeightEntry> get thisYear {
+    final today = DateTime.now().normalizedDate;
+
+    final List<WeightEntry> data = [
+      ...userWeights.where((element) => element.date.year == today.year),
+    ];
+    return data;
+  }
+
+  final dummy = <WeightEntry>[];
+  void setDummy() {
+    isDataLoading.value = true;
+    int i = 365;
+    while (i > 0) {
+      final date = DateTime.now().subtract(i.days).normalizedDate;
+      final wt = Random().nextDouble() * 140;
+      final bmi = calculateBMI(h: 170, w: wt);
+      final entry = WeightEntry(
+        timestamp: date.toIso8601String(),
+        weight: Random().nextDouble() * 100,
+        notes: ' ',
+        bmi: bmi,
+        date: date,
+        bmiCategory: getBmiCategory(bmi),
+      );
+      dummy.add(entry);
+      i--;
     }
     isDataLoading.value = false;
   }

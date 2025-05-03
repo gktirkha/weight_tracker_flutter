@@ -109,8 +109,7 @@ class AddWeightDialog extends StatelessWidget {
                       return;
                     }
 
-                    final bmi = (weight / ((height / 100) * (height / 100)))
-                        .toPrecision(2);
+                    final bmi = calculateBMI(h: height, w: weight);
                     Get.back(
                       result: WeightEntry(
                         notes: notesController.text,
