@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 
@@ -22,8 +23,9 @@ class HomeController extends GetxController {
   final isDataLoading = true.obs;
   final isAddLoading = false.obs;
   final selectedDate = DateTime.now().normalizedDate.obs;
-  final selectionType = SelectionTypes.weekly.obs;
+  final selectionType = SelectionTypes.monthly.obs;
   final dummy = <WeightEntry>[];
+  final graphList = <WeightEntry>[];
 
   @override
   void onInit() {
@@ -34,6 +36,12 @@ class HomeController extends GetxController {
     });
     checkUser();
     setDummy();
+    selectedDate.listen((p0) {
+      addDataToGraph();
+    });
+    selectionType.listen((p0) {
+      addDataToGraph();
+    });
     super.onInit();
   }
 
@@ -121,7 +129,7 @@ class HomeController extends GetxController {
 
   void getData() async {
     userWeights.clear();
-    isDataLoading.value = true;
+
     final entries =
         await FirebaseFirestore.instance
             .collection(userDbLabel)
@@ -132,10 +140,10 @@ class HomeController extends GetxController {
     for (var element in entries.docs) {
       userWeights.add(WeightEntry.fromJson(element.data()));
     }
-    isDataLoading.value = false;
+    addDataToGraph();
   }
 
-  List<WeightEntry> get weekly {
+  List<WeightEntry> weekly(String message) {
     final today = selectedDate.value.normalizedDate;
     final sevenDayBack = today.subtract(7.days);
 
@@ -145,28 +153,34 @@ class HomeController extends GetxController {
             element.date.isAfter(sevenDayBack) && !element.date.isAfter(today),
       ),
     ];
-
+    graphList.addAll(data);
     return data;
   }
 
-  List<WeightEntry> get monthly {
+  List<WeightEntry> monthly(String _) {
     final today = selectedDate.value.normalizedDate;
     final List<WeightEntry> data = [
-      ...dummy.where((element) => element.date.month == today.month),
+      ...dummy.where(
+        (element) =>
+            (element.date.month == today.month) &&
+            (element.date.year == today.year),
+      ),
     ];
+    graphList.addAll(data);
     return data;
   }
 
-  List<WeightEntry> get yearly {
+  List<WeightEntry> yearly(_) {
     final today = selectedDate.value;
 
     final List<WeightEntry> data = [
       ...dummy.where((element) => element.date.year == today.year),
     ];
+    graphList.addAll(data);
     return data;
   }
 
-  List<WeightEntry> get yearlyAverage {
+  List<WeightEntry> yearlyAverage(_) {
     final Map<DateTime, List<double>> monthlyWeights = {};
 
     for (var entry in dummy) {
@@ -179,27 +193,30 @@ class HomeController extends GetxController {
       }
     }
 
-    return monthlyWeights
-        .map((date, weights) {
-          final average = weights.reduce((a, b) => a + b) / weights.length;
-          final bmi = calculateBMI(h: user.value?.height ?? 0, w: average);
-          return MapEntry(
-            date,
-            WeightEntry(
-              timestamp: date.toIso8601String(),
-              weight: average,
-              notes: '',
-              bmi: bmi,
-              date: date,
-              bmiCategory: getBmiCategory(bmi),
-            ),
-          );
-        })
-        .values
-        .toList();
+    final data =
+        monthlyWeights
+            .map((date, weights) {
+              final average = weights.reduce((a, b) => a + b) / weights.length;
+              final bmi = calculateBMI(h: user.value?.height ?? 0, w: average);
+              return MapEntry(
+                date,
+                WeightEntry(
+                  timestamp: date.toIso8601String(),
+                  weight: average,
+                  notes: '',
+                  bmi: bmi,
+                  date: date,
+                  bmiCategory: getBmiCategory(bmi),
+                ),
+              );
+            })
+            .values
+            .toList();
+    graphList.addAll(data);
+    return data;
   }
 
-  List<WeightEntry> get monthlyAverage {
+  List<WeightEntry> monthlyAverage(_) {
     final selectedMonth = selectedDate.value;
     final Map<int, List<double>> weeklyWeights = {};
 
@@ -214,34 +231,43 @@ class HomeController extends GetxController {
       }
     }
 
-    return weeklyWeights.entries.map((entry) {
-      final average = entry.value.reduce((a, b) => a + b) / entry.value.length;
-      final bmi = calculateBMI(h: user.value?.height ?? 0, w: average);
-      final weekStartDay = 1 + (entry.key - 1) * 7;
-      final date = DateTime(
-        selectedMonth.year,
-        selectedMonth.month,
-        weekStartDay,
-      );
+    final data =
+        weeklyWeights.entries.map((entry) {
+          final average =
+              entry.value.reduce((a, b) => a + b) / entry.value.length;
+          final bmi = calculateBMI(h: user.value?.height ?? 0, w: average);
+          final weekStartDay = 1 + (entry.key - 1) * 7;
+          final date = DateTime(
+            selectedMonth.year,
+            selectedMonth.month,
+            weekStartDay,
+          );
 
-      return WeightEntry(
-        timestamp: date.toIso8601String(),
-        weight: average,
-        notes: '',
-        bmi: bmi,
-        date: date,
-        bmiCategory: getBmiCategory(bmi),
-      );
-    }).toList();
+          return WeightEntry(
+            timestamp: date.toIso8601String(),
+            weight: average,
+            notes: '',
+            bmi: bmi,
+            date: date,
+            bmiCategory: getBmiCategory(bmi),
+          );
+        }).toList();
+
+    graphList.addAll(data);
+    return data;
+  }
+
+  List<WeightEntry> all(_) {
+    graphList.addAll(dummy);
+    return dummy;
   }
 
   void increaseDate() {
-    isDataLoading.value = true;
     final sD = selectedDate.value;
 
     selectedDate.value = switch (selectionType.value) {
       SelectionTypes.weekly => sD.add(7.days),
-      SelectionTypes.monthly => DateTime(sD.year + 1),
+      SelectionTypes.monthly => DateTime(sD.year, sD.month + 1),
       SelectionTypes.yearly => DateTime(sD.year + 1),
       SelectionTypes.monthlyAverage => DateTime(sD.year, sD.month + 1),
       SelectionTypes.yearlyAverage => DateTime(sD.year + 1),
@@ -250,27 +276,22 @@ class HomeController extends GetxController {
     if (selectedDate.value.isAfter(DateTime.now().normalizedDate)) {
       selectedDate.value = DateTime.now().normalizedDate;
     }
-    isDataLoading.value = false;
   }
 
   void reduceDate() {
-    isDataLoading.value = true;
     final sD = selectedDate.value;
 
     selectedDate.value = switch (selectionType.value) {
       SelectionTypes.weekly => sD.subtract(7.days),
-      SelectionTypes.monthly => DateTime(sD.year - 1),
+      SelectionTypes.monthly => DateTime(sD.year, sD.month - 1),
       SelectionTypes.yearly => DateTime(sD.year - 1),
       SelectionTypes.monthlyAverage => DateTime(sD.year, sD.month - 1),
       SelectionTypes.yearlyAverage => DateTime(sD.year - 1),
       SelectionTypes.all => sD,
     };
-
-    isDataLoading.value = false;
   }
 
   void setDummy() {
-    isDataLoading.value = true;
     int i = 365;
     while (i > -1) {
       final date = DateTime.now().subtract(i.days).normalizedDate;
@@ -286,6 +307,30 @@ class HomeController extends GetxController {
       );
       dummy.add(entry);
       i--;
+    }
+    addDataToGraph();
+  }
+
+  Future<void> addDataToGraph() async {
+    isDataLoading.value = true;
+    graphList.clear();
+    switch (selectionType.value) {
+      case SelectionTypes.weekly:
+        await compute(weekly, 'message');
+
+      case SelectionTypes.monthly:
+        await compute(monthly, 'message');
+
+      case SelectionTypes.yearly:
+        await compute(yearly, 'message');
+
+      case SelectionTypes.monthlyAverage:
+        await compute(monthlyAverage, 'message');
+
+      case SelectionTypes.yearlyAverage:
+        await compute(yearlyAverage, 'message');
+
+      case SelectionTypes.all:
     }
     isDataLoading.value = false;
   }

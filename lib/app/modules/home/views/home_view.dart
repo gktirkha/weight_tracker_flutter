@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
-import '../widgets/graphs/week_weight_graph.dart';
+import '../widgets/graphs/month_graph.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -45,7 +45,7 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ],
                       ).paddingSymmetric(horizontal: 16),
-                      WeekWeightGraph(),
+                      MonthWeightGraph(),
                     ],
                   ),
         ),

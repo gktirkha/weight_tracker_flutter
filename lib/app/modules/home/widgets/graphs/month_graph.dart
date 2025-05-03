@@ -9,8 +9,8 @@ import '../../../../constants/bmi_helpers.dart';
 import '../../controllers/home_controller.dart';
 import '../../models/weight_track_model/weight_track_model.dart';
 
-class WeekWeightGraph extends GetView<HomeController> {
-  const WeekWeightGraph({super.key});
+class MonthWeightGraph extends GetView<HomeController> {
+  const MonthWeightGraph({super.key});
 
   @override
   Widget build(BuildContext context) {
