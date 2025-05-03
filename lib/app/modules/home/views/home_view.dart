@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../constants/selection_types.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/graphs/month_graph.dart';
@@ -45,6 +46,22 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ],
                       ).paddingSymmetric(horizontal: 16),
+                      DropdownButton(
+                        value: controller.selectionType.value,
+                        items: [
+                          ...SelectionTypes.values.map(
+                            (e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(SelectionTypesX.label(e)),
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            controller.selectionType.value = value;
+                          }
+                        },
+                      ),
                       MonthWeightGraph(),
                     ],
                   ),

@@ -37,10 +37,35 @@ class HomeController extends GetxController {
     checkUser();
     setDummy();
     selectedDate.listen((p0) {
-      addDataToGraph();
+      isDataLoading.value = true;
+      if (null == user.value?.firstLogDate) {
+        selectedDate.value = DateTime.now().normalizedDate;
+      }
+
+      if (selectedDate.value.normalizedDate.isAfter(
+        DateTime.now().normalizedDate,
+      )) {
+        selectedDate.value = DateTime.now().normalizedDate;
+      }
+
+      if (selectedDate.value.normalizedDate.isBefore(
+        (user.value?.firstLogDate ?? DateTime.now()).normalizedDate,
+      )) {
+        selectedDate.value =
+            (user.value?.firstLogDate ?? DateTime.now()).normalizedDate;
+      }
     });
+
+    debounce(
+      selectedDate,
+      (callback) {
+        addDataToGraph();
+      },
+      time: 200.milliseconds,
+      onError: () {},
+    );
+
     selectionType.listen((p0) {
-      selectedDate.value = DateTime.now().normalizedDate;
       addDataToGraph();
     });
     super.onInit();
@@ -272,7 +297,6 @@ class HomeController extends GetxController {
 
   void increaseDate() {
     final sD = selectedDate.value;
-
     selectedDate.value = switch (selectionType.value) {
       SelectionTypes.weekly => sD.add(7.days),
       SelectionTypes.monthly => DateTime(sD.year, sD.month + 1),
@@ -285,7 +309,6 @@ class HomeController extends GetxController {
 
   void reduceDate() {
     final sD = selectedDate.value;
-
     selectedDate.value = switch (selectionType.value) {
       SelectionTypes.weekly => sD.subtract(7.days),
       SelectionTypes.monthly => DateTime(sD.year, sD.month - 1),
@@ -317,23 +340,27 @@ class HomeController extends GetxController {
   }
 
   Future<void> addDataToGraph() async {
-    isDataLoading.value = true;
     graphList.clear();
     switch (selectionType.value) {
       case SelectionTypes.weekly:
         await compute(weekly, 'message');
+        break;
 
       case SelectionTypes.monthly:
         await compute(monthly, 'message');
+        break;
 
       case SelectionTypes.yearly:
         await compute(yearly, 'message');
+        break;
 
       case SelectionTypes.monthlyAverage:
         await compute(monthlyAverage, 'message');
+        break;
 
       case SelectionTypes.yearlyAverage:
         await compute(yearlyAverage, 'message');
+        break;
 
       case SelectionTypes.all:
     }
