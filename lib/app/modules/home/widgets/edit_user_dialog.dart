@@ -96,13 +96,11 @@ class EditUserDialog extends StatelessWidget {
                             isExpanded: true,
                             value: mode,
                             items: [
-                              DropdownMenuItem(
-                                value: TargetMode.gain,
-                                child: Text('Gain'),
-                              ),
-                              DropdownMenuItem(
-                                value: TargetMode.loss,
-                                child: Text('loss'),
+                              ...TargetMode.values.map(
+                                (e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(getTargetModeDisplayLabel(e)),
+                                ),
                               ),
                             ],
                             onChanged: (value) {

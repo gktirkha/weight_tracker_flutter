@@ -1,35 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:magic_extensions/magic_extensions.dart';
 
-import '../../../constants/bmi_helpers.dart';
 import '../../../constants/selection_types.dart';
-import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
-import '../widgets/graphs/all_weight_graph.dart';
-import '../widgets/graphs/monthly_average_weight_graph.dart';
-import '../widgets/graphs/monthly_weight_graph.dart';
-import '../widgets/graphs/weekly_weight_graph.dart';
-import '../widgets/graphs/yearly_average_weight_graph.dart';
-import '../widgets/graphs/yearly_weight_graph.dart';
+import '../goal_status_widget.dart';
+import '../widgets/graphs/graph_view.dart';
+import '../widgets/home_app_drawer.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: HomeAppDrawer(),
       appBar: AppBar(
         actions: [
-          IconButton(
-            onPressed: () {
-              Get.offAllNamed(Routes.LOGIN);
-            },
-            icon: const Icon(Icons.logout),
-          ),
-          IconButton(
-            onPressed: controller.onProfileEdit,
-            icon: const Icon(Icons.person),
+          Obx(
+            () => DropdownButton(
+              value: controller.selectionType.value,
+              items: [
+                ...SelectionTypes.values.map(
+                  (e) => DropdownMenuItem(
+                    value: e,
+                    child: Text(SelectionTypesX.label(e)),
+                  ),
+                ),
+              ],
+              onChanged: (value) {
+                if (value != null) {
+                  controller.selectionType.value = value;
+                }
+              },
+            ),
           ),
         ],
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: Icon(Icons.menu),
+            );
+          },
+        ),
       ),
       body: Center(
         child: Obx(
@@ -37,6 +52,7 @@ class HomeView extends GetView<HomeController> {
               controller.isDataLoading.value
                   ? CircularProgressIndicator()
                   : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 16,
                     children: [
                       Row(
@@ -51,64 +67,12 @@ class HomeView extends GetView<HomeController> {
                             icon: Icon(Icons.arrow_forward_ios),
                           ),
                         ],
-                      ).paddingSymmetric(horizontal: 16),
-                      DropdownButton(
-                        value: controller.selectionType.value,
-                        items: [
-                          ...SelectionTypes.values.map(
-                            (e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(SelectionTypesX.label(e)),
-                            ),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            controller.selectionType.value = value;
-                          }
-                        },
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: 450,
-                          maxHeight: 450,
-                        ),
-                        child: switch (controller.selectionType.value) {
-                          SelectionTypes.weekly => WeeklyWeightGraph(),
-
-                          SelectionTypes.monthly => MonthlyWeightGraph(),
-
-                          SelectionTypes.yearly => YearlyWeightGraph(),
-
-                          SelectionTypes.monthlyAverage =>
-                            MonthlyAverageWeightGraph(),
-
-                          SelectionTypes.yearlyAverage =>
-                            YearlyAverageWeightGraph(),
-
-                          SelectionTypes.all => AllWeightGraph(),
-                        },
-                      ),
-
-                      Wrap(
-                        runSpacing: 16,
-                        spacing: 16,
-                        children: [
-                          ...BmiCategory.values.map(
-                            (e) => Row(
-                              spacing: 8,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CircleAvatar(
-                                  radius: 8,
-                                  backgroundColor: getBmiCategoryColor(e),
-                                ),
-                                Text(getBmiCategoryLabel(e)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      ).marginSymmetric(horizontal: 16),
+                      GraphView(),
+                      16.height(),
+                      Column(
+                        children: [GoalStatusWidget()],
+                      ).marginSymmetric(horizontal: 16),
                     ],
                   ),
         ),

@@ -369,4 +369,6 @@ class HomeController extends GetxController {
     }
     isDataLoading.value = false;
   }
+
+  double? get initialWeight => user.value?.initialWeight;
 }
