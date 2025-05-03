@@ -43,6 +43,10 @@ class GoalStatusWidget extends GetView<HomeController> {
                 controller.user.value?.currentBMI ?? 'Please Log some weight',
           ),
           DetailTile(
+            label: 'Current BMI Category',
+            value: controller.getBmiLab(controller.user.value?.currentWeight),
+          ),
+          DetailTile(
             label: 'Your Height',
             value:
                 controller.user.value?.height == null
