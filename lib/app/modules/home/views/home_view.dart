@@ -24,7 +24,14 @@ class HomeView extends GetView<HomeController> {
           ),
         ],
       ),
-      body: Center(child: WeekWeightGraph()),
+      body: Center(
+        child: Obx(
+          () =>
+              controller.isDataLoading.value
+                  ? CircularProgressIndicator()
+                  : WeekWeightGraph(),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: controller.addData,
         child: Obx(

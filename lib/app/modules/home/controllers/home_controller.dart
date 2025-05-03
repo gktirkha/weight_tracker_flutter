@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
 
 import '../../../routes/app_pages.dart';
-import '../constants/bmi_helpers.dart';
 import '../constants/constants.dart';
 import '../models/weight_track_model/weight_track_model.dart';
 import '../widgets/add_weight_dialog.dart';
@@ -16,6 +15,9 @@ class HomeController extends GetxController {
   final db = FirebaseFirestore.instance;
   String get userDbLabel => 'users';
   String get weightTrackLabel => 'weightTrack';
+  final userWeights = <WeightEntry>[].obs;
+  final isDataLoading = true.obs;
+  final isAddLoading = false.obs;
 
   @override
   void onInit() {
@@ -32,7 +34,6 @@ class HomeController extends GetxController {
     FirebaseAuth.instance.signOut();
   }
 
-  final isAddLoading = false.obs;
   Future<void> addData() async {
     isAddLoading.value = true;
     final email = FirebaseAuth.instance.currentUser?.email;
@@ -67,6 +68,7 @@ class HomeController extends GetxController {
             .doc(email)
             .set(user.value!.toJson());
       }
+      getData();
     });
     isAddLoading.value = false;
   }
@@ -85,6 +87,7 @@ class HomeController extends GetxController {
     final userDoc = await userData.get();
     if (userDoc.exists) {
       user.value = WeightTrackUserModel.fromJson(userDoc.data()!);
+      getData();
     } else {
       onProfileEdit();
     }
@@ -109,70 +112,19 @@ class HomeController extends GetxController {
     });
   }
 
-  final dummy = <WeightEntry>[
-    WeightEntry(
-      date: '01-Oct-2023',
-      weight: 45,
-      timestamp: DateTime.now().toString(),
-      notes: 'Severely underweight',
-      bmi: 15,
-      bmiCategory: getBmiCategory(15),
-    ),
-    WeightEntry(
-      date: '02-Oct-2023',
-      weight: 46,
-      timestamp: DateTime.now().toString(),
-      notes: 'Moderately underweight',
-      bmi: 16.5,
-      bmiCategory: getBmiCategory(16.5),
-    ),
-    WeightEntry(
-      date: '03-Oct-2023',
-      weight: 47,
-      timestamp: DateTime.now().toString(),
-      notes: 'Mildly underweight',
-      bmi: 18,
-      bmiCategory: getBmiCategory(18),
-    ),
-    WeightEntry(
-      date: '04-Oct-2023',
-      weight: 65,
-      timestamp: DateTime.now().toString(),
-      notes: 'Normal',
-      bmi: 22,
-      bmiCategory: getBmiCategory(22),
-    ),
-    WeightEntry(
-      date: '05-Oct-2023',
-      weight: 75,
-      timestamp: DateTime.now().toString(),
-      notes: 'Overweight',
-      bmi: 27,
-      bmiCategory: getBmiCategory(27),
-    ),
-    WeightEntry(
-      date: '06-Oct-2023',
-      weight: 85,
-      timestamp: DateTime.now().toString(),
-      notes: 'Obese Class I',
-      bmi: 32,
-      bmiCategory: getBmiCategory(32),
-    ),
-    WeightEntry(
-      date: '07-Oct-2023',
-      weight: 95,
-      timestamp: DateTime.now().toString(),
-      notes: 'Obese Class II',
-      bmi: 37,
-      bmiCategory: getBmiCategory(37),
-    ),
-    WeightEntry(
-      date: '08-Oct-2023',
-      weight: 105,
-      timestamp: DateTime.now().toString(),
-      notes: 'Obese Class III',
-      bmi: 45,
-      bmiCategory: getBmiCategory(45),
-    ),
-  ];
+  void getData() async {
+    userWeights.clear();
+    isDataLoading.value = true;
+    final entries =
+        await FirebaseFirestore.instance
+            .collection(userDbLabel)
+            .doc(user.value?.email)
+            .collection(weightTrackLabel)
+            .get();
+
+    for (var element in entries.docs) {
+      userWeights.add(WeightEntry.fromJson(element.data()));
+    }
+    isDataLoading.value = false;
+  }
 }
