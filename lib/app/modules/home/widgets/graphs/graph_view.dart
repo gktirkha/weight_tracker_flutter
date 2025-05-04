@@ -37,6 +37,7 @@ class GraphView extends GetView<HomeController> {
           ),
 
           Wrap(
+            alignment: WrapAlignment.center,
             runSpacing: 16,
             spacing: 16,
             children: [
@@ -54,7 +55,7 @@ class GraphView extends GetView<HomeController> {
                 ),
               ),
             ],
-          ),
+          ).marginSymmetric(horizontal: 32),
         ],
       ),
     );

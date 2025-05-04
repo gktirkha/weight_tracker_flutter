@@ -78,34 +78,77 @@ class HomeView extends GetView<HomeController> {
                           16.height(),
                           GraphView(),
                           16.height(),
-                          IntrinsicHeight(
-                            child: Row(
-                              spacing: 16,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius: BorderRadius.circular(16),
+                          ((Get.width > Get.height)
+                                  ? IntrinsicHeight(
+                                    child: Row(
+                                      spacing: 16,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            padding: EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.white,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            child: GoalStatusWidget(),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            padding: EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.white,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            child: GoalGraphWidget(),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    child: GoalStatusWidget(),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      borderRadius: BorderRadius.circular(16),
+                                  )
+                                  : SizedBox(
+                                    child: Column(
+                                      spacing: 16,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          width: double.maxFinite,
+                                          padding: EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.white,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                          ),
+                                          child: GoalStatusWidget(),
+                                        ),
+                                        Container(
+                                          width: double.maxFinite,
+                                          padding: EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.white,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                          ),
+                                          child: GoalGraphWidget(),
+                                        ),
+                                      ],
                                     ),
-                                    child: GoalGraphWidget(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ).marginSymmetric(horizontal: 32),
+                                  ))
+                              .paddingSymmetric(horizontal: 32),
                         ],
                       ),
                       16.height().sliverBox,
