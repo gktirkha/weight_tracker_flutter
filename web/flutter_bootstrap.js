@@ -14,10 +14,9 @@ loadingDiv.appendChild(loaderDiv);
 _flutter.loader.load({
     onEntrypointLoaded: async function (engineInitializer) {
         const appRunner = await engineInitializer.initializeEngine();
-        
+        await appRunner.runApp();
         if (document.body.contains(loadingDiv)) {
             document.body.removeChild(loadingDiv);
         }
-        await appRunner.runApp();
     }
 });
