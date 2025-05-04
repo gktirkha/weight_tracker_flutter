@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:magic_extensions/magic_extensions.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants/bmi_helpers.dart';
 import '../../../constants/constants.dart';
@@ -75,6 +76,10 @@ class HomeController extends GetxController {
 
   void logout() {
     FirebaseAuth.instance.signOut();
+  }
+
+  void onHealth() {
+    launchUrl(Uri.parse('https://fitness.rsin.space/#/home'));
   }
 
   Future<void> addData() async {

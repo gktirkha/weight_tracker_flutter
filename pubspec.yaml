@@ -18,6 +18,7 @@ dependencies:
   magic_extensions: ^0.0.8
   syncfusion_flutter_charts: ^29.1.40
   syncfusion_flutter_core: ^29.1.40
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   build_runner: ^2.4.15
