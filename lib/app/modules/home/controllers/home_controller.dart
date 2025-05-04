@@ -79,7 +79,7 @@ class HomeController extends GetxController {
   }
 
   void onHealth() {
-    launchUrl(Uri.parse('https://fitness.rsin.space/#/home'));
+    launchUrl(Uri.parse('https://fitness.rsin.space/'));
   }
 
   Future<void> addData() async {
