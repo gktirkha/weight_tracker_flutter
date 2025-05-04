@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:magic_extensions/magic_extensions.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../../../constants/bmi_helpers.dart';
@@ -45,7 +46,11 @@ class MonthlyAverageWeightGraph extends GetView<HomeController> {
             );
           },
         ),
-        primaryXAxis: CategoryAxis(),
+        primaryXAxis: CategoryAxis(
+          title: AxisTitle(
+            text: controller.selectedDate.value.format(format: 'MMMM'),
+          ),
+        ),
         primaryYAxis: NumericAxis(
           minimum:
               controller.user.value == null
