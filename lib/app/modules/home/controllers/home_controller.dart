@@ -482,7 +482,6 @@ class HomeController extends GetxController {
 
     userDoc.doc(item.date.format(format: appDateFormat)).delete();
     getData();
-    addDataToGraph();
     isAddLoading.value = false;
     isDataLoading.value = false;
   }
@@ -505,32 +504,61 @@ class HomeController extends GetxController {
         weightEntry: item,
         allowDateChange: false,
       ),
-    ).then((value) {
-      if (value == null) return;
-      isAddLoading.value = true;
-      isDataLoading.value = true;
-      userDoc.doc(item.date.format(format: appDateFormat)).set(value.toJson());
+    ).then((value) async {
+      final now = DateTime.now().normalizedDate;
+      if (value == null || value.weight == null) {
+        isAddLoading.value = false;
+        return;
+      }
+
+      final logDate = value.date.normalizedDate;
+      final weight = value.weight!;
+
+      await userDoc
+          .doc(logDate.format(format: appDateFormat))
+          .set(value.toJson());
+
+      final previousUser = user.value!;
+
+      // Fallback to current weight for initial min/max
+      final maxWt = max(previousUser.maxWeight ?? weight, weight);
+      final minWt = min(previousUser.minWeight ?? weight, weight);
+
+      // Compare new entry with existing oldest date
+      final existingOldestDate =
+          previousUser.lastWeightDate?.normalizedDate ?? logDate;
+      final isOlderLog =
+          logDate.normalizedDate.isAtSameMomentAs(now.normalizedDate)
+              ? true
+              : logDate.isBefore(existingOldestDate);
+
+      final updatedFirstLogDate = [
+        logDate,
+        (previousUser.firstLogDate ?? logDate).normalizedDate,
+        now.normalizedDate,
+      ].reduce((a, b) => a.isBefore(b) ? a : b);
+
+      user.value = previousUser.copyWith(
+        maxWeight: maxWt,
+        minWeight: minWt,
+        currentWeight:
+            isOlderLog ? weight : previousUser.currentWeight ?? weight,
+        currentBMI:
+            isOlderLog
+                ? calculateBMI(h: previousUser.height, w: weight)
+                : previousUser.currentBMI ??
+                    calculateBMI(h: previousUser.height, w: weight),
+        lastWeightDate: isOlderLog ? logDate : previousUser.lastWeightDate,
+        firstLogDate: updatedFirstLogDate,
+      );
+
+      await FirebaseFirestore.instance
+          .collection(userDbLabel)
+          .doc(email)
+          .set(user.value!.toJson());
+
+      getData();
       isAddLoading.value = false;
-      isDataLoading.value = false;
     });
   }
-
-  double? get latestWeight => userWeights.last.weight;
-
-  // final dummy = <WeightEntry>[];
-  // void setDummy() {
-  //   int i = 365;
-  //   while (i > -1) {
-  //     final date = DateTime.now().subtract(i.days).normalizedDate;
-  //     final entry = WeightEntry(
-  //       timestamp: date.toIso8601String(),
-  //       weight: Random().nextDouble() * 100,
-  //       notes: ' ',
-  //       date: date,
-  //     );
-  //     userWeights.add(entry);
-  //     i--;
-  //   }
-  //   addDataToGraph();
-  // }
 }
