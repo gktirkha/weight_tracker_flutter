@@ -1,6 +1,6 @@
 {
-    "name": "weight_tracker",
-    "short_name": "weight_tracker",
+    "name": "Weight Tracker",
+    "short_name": "Weight Tracker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
