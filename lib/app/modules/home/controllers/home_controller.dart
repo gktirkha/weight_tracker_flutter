@@ -127,7 +127,10 @@ class HomeController extends GetxController {
       // Compare new entry with existing oldest date
       final existingOldestDate =
           previousUser.lastWeightDate?.normalizedDate ?? logDate;
-      final isOlderLog = logDate.isBefore(existingOldestDate);
+      final isOlderLog =
+          logDate.normalizedDate.isAtSameMomentAs(now.normalizedDate)
+              ? true
+              : logDate.isBefore(existingOldestDate);
 
       final updatedFirstLogDate = [
         logDate,
@@ -143,7 +146,8 @@ class HomeController extends GetxController {
         currentBMI:
             isOlderLog
                 ? calculateBMI(h: previousUser.height, w: weight)
-                : previousUser.currentBMI,
+                : previousUser.currentBMI ??
+                    calculateBMI(h: previousUser.height, w: weight),
         lastWeightDate: isOlderLog ? logDate : previousUser.lastWeightDate,
         firstLogDate: updatedFirstLogDate,
       );
