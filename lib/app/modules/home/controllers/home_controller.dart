@@ -254,32 +254,40 @@ class HomeController extends GetxController {
 
   List<WeightEntry> monthlyAverage(String _) {
     final selectedMonth = selectedDate.value;
+    final Map<int, List<double>> weeklyWeights = {};
 
-    final weights =
-        userWeights
-            .where(
-              (entry) =>
-                  entry.date.year == selectedMonth.year &&
-                  entry.date.month == selectedMonth.month &&
-                  entry.weight != null,
-            )
-            .map((e) => e.weight!)
-            .toList();
+    for (var entry in userWeights) {
+      if (entry.date.year == selectedMonth.year &&
+          entry.date.month == selectedMonth.month) {
+        final week = ((entry.date.day - 1) ~/ 7) + 1;
+        weeklyWeights.putIfAbsent(week, () => []);
+        if (entry.weight != null) {
+          weeklyWeights[week]!.add(entry.weight!);
+        }
+      }
+    }
 
-    if (weights.isEmpty) return [];
+    final data =
+        weeklyWeights.entries.map((entry) {
+          final average =
+              entry.value.reduce((a, b) => a + b) / entry.value.length;
+          final weekStartDay = 1 + (entry.key - 1) * 7;
+          final date = DateTime(
+            selectedMonth.year,
+            selectedMonth.month,
+            weekStartDay,
+          );
 
-    final avg = weights.reduce((a, b) => a + b) / weights.length;
-    final avgDate = DateTime(selectedMonth.year, selectedMonth.month);
+          return WeightEntry(
+            timestamp: date.toIso8601String(),
+            weight: average,
+            notes: '',
+            date: date,
+          );
+        }).toList();
 
-    final entry = WeightEntry(
-      timestamp: avgDate.toIso8601String(),
-      weight: avg,
-      notes: '',
-      date: avgDate,
-    );
-
-    graphList.add(entry);
-    return [entry];
+    graphList.addAll(data);
+    return data;
   }
 
   List<WeightEntry> yearlyAverage(String _) =>
