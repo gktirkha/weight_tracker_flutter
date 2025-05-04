@@ -252,8 +252,35 @@ class HomeController extends GetxController {
     return data;
   }
 
-  List<WeightEntry> monthlyAverage(String _) =>
-      _averageGroupedBy((e) => ((e.date.day - 1) ~/ 7) + 1, 'month');
+  List<WeightEntry> monthlyAverage(String _) {
+    final selectedMonth = selectedDate.value;
+
+    final weights =
+        userWeights
+            .where(
+              (entry) =>
+                  entry.date.year == selectedMonth.year &&
+                  entry.date.month == selectedMonth.month &&
+                  entry.weight != null,
+            )
+            .map((e) => e.weight!)
+            .toList();
+
+    if (weights.isEmpty) return [];
+
+    final avg = weights.reduce((a, b) => a + b) / weights.length;
+    final avgDate = DateTime(selectedMonth.year, selectedMonth.month);
+
+    final entry = WeightEntry(
+      timestamp: avgDate.toIso8601String(),
+      weight: avg,
+      notes: '',
+      date: avgDate,
+    );
+
+    graphList.add(entry);
+    return [entry];
+  }
 
   List<WeightEntry> yearlyAverage(String _) =>
       _averageGroupedBy((e) => DateTime(e.date.year, e.date.month), 'year');
