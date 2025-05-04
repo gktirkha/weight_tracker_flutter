@@ -11,9 +11,9 @@ class SplashController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final User? currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
-        Get.offAll(Routes.LOGIN);
+        Get.offAllNamed(Routes.LOGIN);
       } else {
-        Get.offAll(Routes.HOME);
+        Get.offAllNamed(Routes.HOME);
       }
     });
   }
