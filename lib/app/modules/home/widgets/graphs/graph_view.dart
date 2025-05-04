@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:magic_extensions/magic_extensions.dart';
 
 import '../../../../constants/bmi_helpers.dart';
 import '../../../../constants/selection_types.dart';
@@ -35,7 +36,7 @@ class GraphView extends GetView<HomeController> {
               SelectionTypes.all => AllWeightGraph(),
             },
           ),
-
+          16.height(),
           Wrap(
             alignment: WrapAlignment.center,
             runSpacing: 16,

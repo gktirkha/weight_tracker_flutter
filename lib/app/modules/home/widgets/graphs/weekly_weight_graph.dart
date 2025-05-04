@@ -46,7 +46,7 @@ class WeeklyWeightGraph extends GetView<HomeController> {
             );
           },
         ),
-        primaryXAxis: CategoryAxis(title: AxisTitle(text: 'Date')),
+        primaryXAxis: CategoryAxis(),
         primaryYAxis: NumericAxis(
           minimum:
               controller.user.value == null
@@ -73,7 +73,7 @@ class WeeklyWeightGraph extends GetView<HomeController> {
                       ) ~/
                       10 *
                       10,
-          title: AxisTitle(text: 'Weight (kg)'),
+
           plotBands:
               controller.user.value?.height == null
                   ? []

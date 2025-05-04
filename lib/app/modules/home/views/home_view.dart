@@ -14,6 +14,7 @@ class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       drawer: HomeAppDrawer(),
       appBar: AppBar(
@@ -78,7 +79,7 @@ class HomeView extends GetView<HomeController> {
                           16.height(),
                           GraphView(),
                           16.height(),
-                          ((Get.width > Get.height)
+                          ((size.width > size.height)
                                   ? IntrinsicHeight(
                                     child: Row(
                                       spacing: 16,
