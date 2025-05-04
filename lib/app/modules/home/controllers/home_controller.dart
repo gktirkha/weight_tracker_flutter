@@ -135,14 +135,17 @@ class HomeController extends GetxController {
     final updatedUser = currentUser.copyWith(
       maxWeight: max(currentUser.maxWeight ?? weight, weight),
       minWeight: min(currentUser.minWeight ?? weight, weight),
-      currentWeight: _isNewer(entry.date) ? currentUser.currentWeight : weight,
+      currentWeight:
+          _isNewer(entry.date) ? currentUser.currentWeight ?? weight : weight,
       currentBMI:
           _isNewer(entry.date)
               ? currentUser.currentBMI ??
                   calculateBMI(h: currentUser.height, w: weight)
               : calculateBMI(h: currentUser.height, w: weight),
       lastWeightDate:
-          _isNewer(entry.date) ? currentUser.lastWeightDate : entry.date,
+          _isNewer(entry.date)
+              ? currentUser.lastWeightDate ?? entry.date
+              : entry.date,
       firstLogDate: [
         entry.date,
         currentUser.firstLogDate ?? entry.date,
