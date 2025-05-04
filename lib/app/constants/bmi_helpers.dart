@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -92,7 +94,10 @@ class WeightBmiRange {
       '${category.name}: ${min.toStringAsFixed(1)} - ${max.isInfinite ? "∞" : max.toStringAsFixed(1)} kg';
 }
 
-List<WeightBmiRange> getWeightWeightBmiRanges(double? heightCm) {
+List<WeightBmiRange> getWeightWeightBmiRanges(
+  double? heightCm, {
+  double? userCurrentWt,
+}) {
   if (heightCm == null) return [];
   if (heightCm < 30) return [];
   final heightMeters = heightCm / 100;
@@ -106,7 +111,11 @@ List<WeightBmiRange> getWeightWeightBmiRanges(double? heightCm) {
     WeightBmiRange(25 * h2, 30 * h2, BmiCategory.overweight),
     WeightBmiRange(30 * h2, 35 * h2, BmiCategory.obeseClass1),
     WeightBmiRange(35 * h2, 40 * h2, BmiCategory.obeseClass2),
-    WeightBmiRange(40 * h2, (40 * h2) + 30, BmiCategory.obeseClass3),
+    WeightBmiRange(
+      40 * h2,
+      max(userCurrentWt ?? 0, (40 * h2)) + 30,
+      BmiCategory.obeseClass3,
+    ),
   ];
 }
 

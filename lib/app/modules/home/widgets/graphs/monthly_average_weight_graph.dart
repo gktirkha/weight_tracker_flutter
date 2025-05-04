@@ -76,7 +76,10 @@ class MonthlyAverageWeightGraph extends GetView<HomeController> {
           plotBands:
               controller.user.value?.height == null
                   ? []
-                  : getWeightWeightBmiRanges(controller.user.value?.height)
+                  : getWeightWeightBmiRanges(
+                        controller.user.value?.height,
+                        userCurrentWt: controller.user.value?.maxWeight,
+                      )
                       .map(
                         (e) => PlotBand(
                           start: e.min,
