@@ -81,7 +81,7 @@ class AddWeightDialog extends StatelessWidget {
                   hintText: 'Please Enter Weight in KG',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
 
               TextField(

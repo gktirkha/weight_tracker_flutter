@@ -61,7 +61,7 @@ class EditUserDialog extends StatelessWidget {
                   hintText: 'Enter your Height in cm',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
               TextField(
                 controller: initialWeightController,
@@ -70,7 +70,7 @@ class EditUserDialog extends StatelessWidget {
                   hintText: 'Enter your Initial Weight in kg',
                   labelStyle: TextStyle(color: Colors.white),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
               IntrinsicHeight(
                 child: Row(
@@ -85,7 +85,9 @@ class EditUserDialog extends StatelessWidget {
                           hintText: 'Enter your Target Weight in kg',
                           labelStyle: TextStyle(color: Colors.white),
                         ),
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                       ),
                     ),
                     Expanded(
